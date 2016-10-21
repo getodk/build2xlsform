@@ -39,7 +39,7 @@ metadata-type-conversion =
 # make unit testing easier.
 new-context = -> { seen-fields: {}, choices: {}, warnings: [] }
 
-# nested as it's not purely functional and sets context directly.
+# returns an intermediate-formatted question clone (purely functional), but mutates context.
 convert-question = (question, context, prefix = []) ->
   # full clone.
   question = deepcopy(question)
@@ -122,6 +122,7 @@ convert-question = (question, context, prefix = []) ->
   # return. context is mutated (:/) so does not need to be returned.
   question
 
+# the main show.
 convert-form = (form) ->
   # convert build question data to intermediate xls-json form.
   context = new-context()
@@ -161,6 +162,7 @@ convert-form = (form) ->
     { name: \warnings, data: [ [[ warning ]] for warning in ([ 'message' ] ++ (warnings ? [ 'No warnings; everything looked fine.' ])) ] }
   ]
 
+# takes sheets, streams xlsx.
 serialize-form = (stream, sheets) -->
   stream.setHeader(\Content-Type, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
   stream.setHeader(\Content-Disposition, 'fieldname="converted.xlsx"')
@@ -168,6 +170,6 @@ serialize-form = (stream, sheets) -->
   stream.statusCode = 200
   stream.end()
 
-# the main show.
+# export everything for unit testing; most people should only need convert-form/serialize-form.
 module.exports = { new-context, convert-question, convert-form, serialize-form }
 
