@@ -10,7 +10,9 @@
   },
   "devDependencies": {
     "livescript": "1.5.0",
-    "prelude-ls": "1.1.2"
+    "prelude-ls": "1.1.2",
+    "jasmine": "2.5.2",
+    "jasmine-reporters": "2.2.0"
   }
 }
 
