@@ -60,10 +60,6 @@ convert-question = (question, context, prefix = []) ->
   for key, value of question
     delete question[key] if is-nonsense(value)
 
-  # boolean value conversion.
-  for key, value of question when value is true or value is false
-    question[key] = if value is true then \yes else \no
-
   ## merge in convenience constraint logic definitions:
   # convert constraint field to array.
   question.constraint = if question.constraint? then [ question.constraint ] else []
@@ -106,6 +102,10 @@ convert-question = (question, context, prefix = []) ->
       type-conversion[question.type]
     else
       question.type.slice(5).toLowerCase()
+
+  # boolean value conversion. do this near the end to prevent confusion.
+  for key, value of question when value is true or value is false
+    question[key] = if value is true then \yes else \no
 
   # mark the schema fields we've seen.
   for key of question
