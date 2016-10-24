@@ -97,3 +97,18 @@ describe \type ->
     expect(looping.type).toBe(\repeat)
     expect(looping.loop).toBe(undefined)
 
+describe \name ->
+  test 'passthrough' ->
+    result = { type: \inputNumber, name: \my_test_question } |> convert-simple
+    expect(result.name).toBe(\my_test_question)
+
+describe \label ->
+  test 'multilingual passthrough' ->
+    result = { type: \inputNumber, label: { en: \thanks, sv: \tack } } |> convert-simple
+    expect(result.label).toEqual({ en: \thanks, sv: \tack })
+
+describe \hint ->
+  test 'multilingual passthrough' ->
+    result = { type: \inputNumber, hint: { en: \thanks, sv: \tack } } |> convert-simple
+    expect(result.hint).toEqual({ en: \thanks, sv: \tack })
+
