@@ -2,6 +2,9 @@
   "name": "build2xlsform",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "test": "make test"
+  },
   "dependencies": {
     "express": "4.14.0",
     "body-parser": "1.15.2",
