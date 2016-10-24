@@ -69,8 +69,8 @@ convert-question = (question, context, prefix = []) ->
   # merge number/date range.
   if (range = delete question.range)?
     question.constraint = (question.constraint ? []) ++
-      ". <#{if range.minInclusive is true then \= else ''} #{expr-value(range.min)}" ++
-      ". >#{if range.maxInclusive is true then \= else ''} #{expr-value(range.max)}"
+      ". >#{if range.minInclusive is true then \= else ''} #{expr-value(range.min)}" ++
+      ". <#{if range.maxInclusive is true then \= else ''} #{expr-value(range.max)}"
   # convert constraint field back into an expression.
   if question.constraint.length is 0
     delete question.constraint

@@ -112,3 +112,33 @@ describe \hint ->
     result = { type: \inputNumber, hint: { en: \thanks, sv: \tack } } |> convert-simple
     expect(result.hint).toEqual({ en: \thanks, sv: \tack })
 
+describe \constraint ->
+  test 'custom constraint passthrough' ->
+    result = { type: \inputNumber, constraint: '. > 3' } |> convert-simple
+    expect(result.constraint).toBe('(. > 3)')
+
+  # n.b. there is a bug in build that exposes ui options for inclusivity that should not be there.
+  test 'build text length constraint generation' ->
+    result = { type: \inputText, length: { min: 42, max: 345 } } |> convert-simple
+    expect(result.constraint).toBe('(regex(., "^.{42,345}$"))')
+
+  test 'build text length false pruning' ->
+    result = { type: \inputText, length: false } |> convert-simple
+    expect(result.constraint).toBe(undefined)
+
+  test 'build number/date range constraint generation (incl/excl combo)' ->
+    result = { type: \inputNumber, range: { min: 3, minInclusive: true, max: 9 } } |> convert-simple
+    expect(result.constraint).toBe('(. >= 3) and (. < 9)')
+
+  test 'build number/date range constraint generation (excl/incl combo)' ->
+    result = { type: \inputNumber, range: { min: 3, max: 9, maxInclusive: true } } |> convert-simple
+    expect(result.constraint).toBe('(. > 3) and (. <= 9)')
+
+  test 'build number/date range false pruning' ->
+    result = { type: \inputText, range: false } |> convert-simple
+    expect(result.constraint).toBe(undefined)
+
+  test 'custom constraint merging with build generation' ->
+    result = { type: \inputNumber, constraint: '. != 5' range: { min: 3, max: 9 } } |> convert-simple
+    expect(result.constraint).toBe('(. != 5) and (. > 3) and (. < 9)')
+
