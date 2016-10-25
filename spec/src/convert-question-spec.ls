@@ -112,6 +112,10 @@ describe \hint ->
     result = { type: \inputNumber, hint: { en: \thanks, sv: \tack } } |> convert-simple
     expect(result.hint).toEqual({ en: \thanks, sv: \tack })
 
+  test 'empty pruning' ->
+    result = { type: \inputNumber, hint: {} } |> convert-simple
+    expect(result.hint).toEqual(undefined)
+
 describe \constraint ->
   test 'custom constraint passthrough' ->
     result = { type: \inputNumber, constraint: '. > 3' } |> convert-simple
@@ -141,4 +145,24 @@ describe \constraint ->
   test 'custom constraint merging with build generation' ->
     result = { type: \inputNumber, constraint: '. != 5' range: { min: 3, max: 9 } } |> convert-simple
     expect(result.constraint).toBe('(. != 5) and (. > 3) and (. < 9)')
+
+describe 'constraint message' ->
+  test 'multilingual passthrough' ->
+    result = { type: \inputNumber, invalidText: { en: \fun, sv: \roligt } } |> convert-simple
+    expect(result.invalidText).toEqual(undefined)
+    expect(result.constraint_message).toEqual({ en: \fun, sv: \roligt })
+
+  test 'empty pruning' ->
+    result = { type: \inputNumber, invalidText: {} } |> convert-simple
+    expect(result.invalidText).toEqual(undefined)
+    expect(result.constraint_message).toEqual(undefined)
+
+describe 'required' ->
+  test 'true becomes yes' ->
+    result = { type: \inputText, required: true } |> convert-simple
+    expect(result.required).toEqual(\yes)
+
+  test 'false becomes nothing' ->
+    falsy = { type: \inputText, required: false } |> convert-simple
+    expect(falsy.required).toEqual(undefined)
 
