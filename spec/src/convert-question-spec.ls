@@ -267,6 +267,8 @@ describe 'options' ->
     result = convert-question({ type: \inputSelectOne, name: \test_select, options: choices }, context, [ \layer1, \layer2 ])
     expect(context.choices.choices_layer1_layer2_test_select).toEqual(choices)
 
+  # TODO: no test for choice id collision.
+
 # questions nested in groups are recursively processed:
 describe 'group children' ->
   # use required flag mutation as a sign that processing happened.

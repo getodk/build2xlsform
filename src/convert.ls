@@ -11,7 +11,7 @@ expr-value = (value) ->
   | otherwise                 => value
 
 # conversion constants.
-survey-fields = <[ type name label hint required read_only default constraint constraint_message relevant calculation repeat_count appearance ]>
+survey-fields = <[ type name label hint required read_only default constraint constraint_message relevant calculation appearance ]>
 choices-fields = [ 'list name', \name, \label ]
 
 multilingual-fields = <[ label hint constraint_message ]> # these fields have ::lang syntax/support.
