@@ -149,20 +149,150 @@ describe \constraint ->
 describe 'constraint message' ->
   test 'multilingual passthrough' ->
     result = { type: \inputNumber, invalidText: { en: \fun, sv: \roligt } } |> convert-simple
-    expect(result.invalidText).toEqual(undefined)
+    expect(result.invalidText).toBe(undefined)
     expect(result.constraint_message).toEqual({ en: \fun, sv: \roligt })
 
   test 'empty pruning' ->
     result = { type: \inputNumber, invalidText: {} } |> convert-simple
-    expect(result.invalidText).toEqual(undefined)
-    expect(result.constraint_message).toEqual(undefined)
+    expect(result.invalidText).toBe(undefined)
+    expect(result.constraint_message).toBe(undefined)
 
-describe 'required' ->
+describe 'required' -> # in which we briefly become a bit existential.
   test 'true becomes yes' ->
     result = { type: \inputText, required: true } |> convert-simple
-    expect(result.required).toEqual(\yes)
+    expect(result.required).toBe(\yes)
 
   test 'false becomes nothing' ->
     falsy = { type: \inputText, required: false } |> convert-simple
-    expect(falsy.required).toEqual(undefined)
+    expect(falsy.required).toBe(undefined)
+
+# required_message::lang is in the xlsform spec but is not in the build featureset.
+
+describe 'default' ->
+  test 'value is passed through' ->
+    result = { type: \inputText, defaultValue: 'test default' } |> convert-simple
+    expect(result.default).toBe('test default')
+
+  test 'initial field is erased' ->
+    result = { type: \inputText, defaultValue: 'test default' } |> convert-simple
+    expect(result.defaultValue).toBe(undefined)
+
+describe 'relevant' ->
+  test 'value is passed through' ->
+    result = { type: \inputText, relevance: 'some_var > 1' } |> convert-simple
+    expect(result.relevant).toBe('some_var > 1')
+
+  test 'initial field is erased' ->
+    result = { type: \inputText, relevance: 'some_var > 1' } |> convert-simple
+    expect(result.relevance).toBe(undefined)
+
+describe 'read_only' ->
+  test 'true becomes yes' ->
+    result = { type: \inputText, readOnly: true } |> convert-simple
+    expect(result.readOnly).toBe(undefined)
+    expect(result.read_only).toBe(\yes)
+
+  test 'false becomes nothing' ->
+    falsy = { type: \inputText, readOnly: false } |> convert-simple
+    expect(falsy.readOnly).toBe(undefined)
+    expect(falsy.read_only).toBe(undefined)
+
+describe 'calculation' ->
+  test 'value is passed through' ->
+    result = { type: \inputText, calculate: '2 + 2' } |> convert-simple
+    expect(result.calculation).toBe('2 + 2')
+
+  test 'initial field is erased' ->
+    result = { type: \inputText, calculate: '2 + 2' } |> convert-simple
+    expect(result.calculate).toBe(undefined)
+
+# repeat_count is in the xlsform spec but is not in the build featureset.
+# embedded media are in the xlsform spec but are not in the build featureset.
+
+# appearance is in the xlsform spec; the only use of it in build is here:
+describe 'appearance' ->
+  test 'group fieldlist flag becomes appearance prop if true' ->
+    result = { type: \group, fieldList: true } |> convert-simple
+    expect(result.fieldList).toBe(undefined)
+    expect(result.appearance).toBe(\field-list)
+
+  test 'group fieldlist flag vanishes if false' ->
+    result = { type: \group, fieldList: false } |> convert-simple
+    expect(result.fieldList).toBe(undefined)
+    expect(result.appearance).toBe(undefined)
+
+## from here on, we cover features not part of the xlsform spec.
+
+# custom xpath bindings are in build but are *not* in xlsform:
+describe 'destination' ->
+  test 'generates a warning if used' ->
+    context = new-context()
+    result = convert-question({ type: \inputText, destination: '/custom/xpath' }, context)
+    expect(result.destination).toBe(undefined)
+    expect(context.warnings.length).toBe(1)
+
+# groups become repeats:
+describe 'group' ->
+  test 'with loop becomes repeat' ->
+    result = { type: \group, loop: true } |> convert-simple
+    expect(result.loop).toBe(undefined)
+    expect(result.type).toBe(\repeat)
+
+  test 'without loop remains group' ->
+    result = { type: \group, loop: false } |> convert-simple
+    expect(result.loop).toBe(undefined)
+    expect(result.type).toBe(\group)
+    result = { type: \group } |> convert-simple
+    expect(result.type).toBe(\group)
+
+# options get copied to context:
+describe 'options' ->
+  test 'select one choices copied to context and removed' ->
+    choices = [{ val: 3 }]
+    context = new-context()
+    result = convert-question({ type: \inputSelectOne, name: \test_select, options: choices }, context)
+    expect(result.options).toBe(undefined)
+    expect(context.choices.choices_test_select).toEqual(choices)
+
+  test 'select many choices copied to context and removed' ->
+    choices = [{ val: 3 }]
+    context = new-context()
+    result = convert-question({ type: \inputSelectMany, name: \test_select, options: choices }, context)
+    expect(result.options).toBe(undefined)
+    expect(context.choices.choices_test_select).toEqual(choices)
+
+  test 'nested prefix is correctly applied' ->
+    choices = [{ val: 3 }]
+    context = new-context()
+    result = convert-question({ type: \inputSelectOne, name: \test_select, options: choices }, context, [ \layer1, \layer2 ])
+    expect(context.choices.choices_layer1_layer2_test_select).toEqual(choices)
+
+# questions nested in groups are recursively processed:
+describe 'group children' ->
+  # use required flag mutation as a sign that processing happened.
+  test 'one level down are processed' ->
+    result = { type: \group, name: \layer1, children: [{ type: \inputText, required: true }] } |> convert-simple
+    expect(result.children[0].required).toBe(\yes)
+
+  test 'two levels down are processed' ->
+    result = {
+      type: \group, name: \layer1, children: [{
+        type: \group, name: \layer2, children: [{
+          type: \inputText, required: true
+        }]
+      }]
+    } |> convert-simple
+    expect(result.children[0].children[0].required).toBe(\yes)
+
+  test 'correct prefix and context passed down' ->
+    choices = [{ val: 3 }]
+    context = new-context()
+    result = convert-question({
+      type: \group, name: \layer1, children: [{
+        type: \group, name: \layer2, children: [{
+          type: \inputSelectOne, name: \aselect, options: choices
+        }]
+      }]
+    }, context)
+    expect(context.choices.choices_layer1_layer2_aselect).toEqual(choices)
 

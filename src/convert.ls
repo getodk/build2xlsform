@@ -117,7 +117,7 @@ convert-question = (question, context, prefix = []) ->
 
   # recurse.
   if question.children?
-    question.children = [ convert-question(child, context, prefix ++ [ question.name ]) for child in question.children ]
+    question.children = [ convert-question(child, context, prefix) for child in question.children ]
 
   # return. context is mutated (:/) so does not need to be returned.
   question
