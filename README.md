@@ -33,6 +33,10 @@ about livescript
 * `a |> b` is syntactic sugar for `b(a)`. As well, `a |> b(c)` is shorthand for `b(c, a)`. We use this here and there to make nested chains of function calls easier to read and understand. It's generally known as the 'forward piping' operator.
 * As with Python, Livescript is whitespace-significant, and uses indentation to signify code blocks.
 
+integration with odkbuild
+-------------------------
+The Build webapp expects to be able to find this service when it `POST`s to `/convert`. On the production Build instance, we accomplish this by capturing the `/convert` Location and using `ProxyPass` to forward the request on to an instance of `build2xlsform` running on a local port.
+
 contributing
 ------------
 Please submit pull requests for any code you'd like to push. As you do so, please keep in mind:
