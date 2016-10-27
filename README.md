@@ -9,7 +9,7 @@ introduction
 
 compilation
 -----------
-The project depends on **nodejs**; we officially support versions 5 and 6. Make sure you have node and npm [corrently installed](https://nodejs.org/en/download/) for your platform.
+The project depends on **nodejs**; we officially support versions 5 and 6. Make sure you have node and npm [correctly installed](https://nodejs.org/en/download/) for your platform.
 
 Once you have that, you should be able to simply `make` to trigger a build. The Makefile handles running `npm install`, but if you into issues performing that step on your own is a good troubleshooting start.
 
@@ -23,7 +23,7 @@ All the relevant code is in `/src`. There are only two files:
     * `serialize-form()` takes the output of `convert-form()` (or indeed any sheet data compatible with `node-xlsx`) and a nodejs stdlib `HttpResponse` object, and handles the conversion from data objects to XLSX binary, serialization out, and stream lifecycle.
 * `server.ls` is a dead-simple **express** webserver that exposes a single HTTP endpoint at `POST /convert`, takes JSON as the POST-body (with a request `Content-Type` of `application/json`), and responds with an attachment-disposition binary stream of the XLSX result.
 
-Tests are located in `/spec/src`. Each test file has some notes at the top indicating how they're organized. You can run the tests with `make test`. This will also recompile any main project files you may have changed.
+Tests are located in `/spec/src`. Each test file has some notes at the top indicating how it's organized. You can run the tests with `make test`. This will also recompile any main project files you may have changed.
 
 about livescript
 ----------------
@@ -35,14 +35,14 @@ about livescript
 
 integration with odkbuild
 -------------------------
-The Build webapp expects to be able to find this service when it `POST`s to `/convert`. On the production Build instance, we accomplish this by capturing the `/convert` Location and using `ProxyPass` to forward the request on to an instance of `build2xlsform` running on a local port.
+The Build webapp expects to be able to find this service when it `POST`s to `/convert`. On the production Build instance in Apache, we accomplish this by capturing `<Location /convert>` and using `ProxyPass` to forward the request on to an instance of `build2xlsform` running on a local port.
 
 contributing
 ------------
 Please submit pull requests for any code you'd like to push. As you do so, please keep in mind:
 
 * The project is meant to be as purely-functional as possible, as is ideal for data handling and transformation. Avoid mutable or global state, and don't introduce heavy object-oriented approaches without very good reason.
-* Please do run the tests before submission.
+* Please do run the tests before submission, and augment them as necessary.
 * Please ensure that any changes you make adhere to both the [ODK Build](https://github.com/clint-tseng/odkbuild/blob/master/public/javascripts/control.js#L206) property schema, as well as the XLSForm [reference spec](http://xlsform.org/ref-table/).
 
 license
