@@ -226,3 +226,64 @@ describe 'row generation:' ->
         [ \choices_testselect, \delta, undefined, undefined ]
       ])
 
+describe 'complex row generation' ->
+  test 'generates begin and end rows for groups' ->
+      result = convert-form(
+        metadata:
+          activeLanguages: [ \en ]
+        controls: [{ type: \group, name: \mygroup, children: [] }]
+      )
+
+      expect(result[0].data[1]).toEqual([ 'begin group', \mygroup ])
+      expect(result[0].data[2]).toEqual([ 'end group' ])
+
+  test 'generates child rows for questions nested in groups' ->
+      result = convert-form(
+        metadata:
+          activeLanguages: [ \en ]
+        controls: [{ type: \group, name: \mygroup, children: [
+          { type: \inputText, name: \aquestion, label: { en: 'question one' } },
+          { type: \inputText, name: \bquestion, label: { en: 'question two' } }
+        ] }]
+      )
+
+      expect(result[0].data).toEqual([
+        [ \type, \name, \label::en ],
+        [ 'begin group', \mygroup, undefined ],
+        [ 'text', \aquestion, 'question one' ],
+        [ 'text', \bquestion, 'question two' ],
+        [ 'end group' ]
+      ])
+
+  test 'groups nest correctly' ->
+      result = convert-form(
+        metadata:
+          activeLanguages: [ \en ]
+        controls: [{ type: \group, name: \mygroup, children: [
+          { type: \inputText, name: \aquestion, label: { en: 'question one' } },
+          { type: \group, name: \yourgroup, children: [
+            { type: \inputText, name: \bquestion, label: { en: 'question two' } }
+          ]}
+        ] }]
+      )
+
+      expect(result[0].data).toEqual([
+        [ \type, \name, \label::en ],
+        [ 'begin group', \mygroup, undefined ],
+        [ 'text', \aquestion, 'question one' ],
+        [ 'begin group', \yourgroup, undefined ],
+        [ 'text', \bquestion, 'question two' ],
+        [ 'end group' ]
+        [ 'end group' ]
+      ])
+
+  test 'loop option creates repeats' ->
+      result = convert-form(
+        metadata:
+          activeLanguages: [ \en ]
+        controls: [{ type: \group, name: \mygroup, loop: true, children: [] }]
+      )
+
+      expect(result[0].data[1]).toEqual([ 'begin repeat', \mygroup ])
+      expect(result[0].data[2]).toEqual([ 'end repeat' ])
+
