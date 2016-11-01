@@ -279,6 +279,29 @@ describe 'appearance' ->
     expect(result.appearance).toBe(\year)
     expect(result.kind).toBe(undefined)
 
+  test 'location appearances' ->
+    result = { type: \inputLocation, appearance: 'Default (GPS)' } |> convert-simple
+    expect(result.appearance).toBe(undefined)
+
+    result = { type: \inputLocation, appearance: 'Show Map (GPS)' } |> convert-simple
+    expect(result.appearance).toBe(\maps)
+
+    result = { type: \inputLocation, appearance: 'Manual (No GPS)' } |> convert-simple
+    expect(result.appearance).toBe(\placement-map)
+
+  test 'select appearances' ->
+    result = { type: \inputSelectOne, appearance: 'Default' } |> convert-simple
+    expect(result.appearance).toBe(undefined)
+
+    result = { type: \inputSelectOne, appearance: 'Minimal (spinner)' } |> convert-simple
+    expect(result.appearance).toBe(\minimal)
+
+    result = { type: \inputSelectOne, appearance: 'Table' } |> convert-simple
+    expect(result.appearance).toBe(\label)
+
+    result = { type: \inputSelectOne, appearance: 'Horizontal Layout' } |> convert-simple
+    expect(result.appearance).toBe(\horizontal)
+
 ## from here on, we cover features not part of the xlsform spec.
 
 # custom xpath bindings are in build but are *not* in xlsform:

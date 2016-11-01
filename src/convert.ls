@@ -55,6 +55,13 @@ metadata-type-conversion =
   'SIM Serial': \simserial
   'Phone Number': \phonenumber
 
+appearance-conversion =
+  'Show Map (GPS)': \maps
+  'Manual (No GPS)': \placement-map
+  'Minimal (spinner)': \minimal
+  'Table': \label
+  'Horizontal Layout': \horizontal
+
 # make unit testing easier.
 new-context = -> { seen-fields: {}, choices: {}, warnings: [] }
 
@@ -96,18 +103,22 @@ convert-question = (question, context, prefix = []) ->
   else
     question.constraint = question.constraint |> map(-> "(#it)") |> join(' and ')
 
-  # field-list appearance.
-  if (delete question.fieldList) is true
-    question.appearance = \field-list
-
   # deal with choices. life is hard.
   if question.options?
     context.warnings ++= [ "Multiple choice lists have the ID '#choice-id'. The last one encountered is used." ] if context.choices[choice-id]?
     context.choices[choice-id] = (delete question.options)
 
+  # appearance value-massaging.
+  if question.appearance?
+    question.appearance = appearance-conversion[delete question.appearance]
+
   # if date, we may need to apply an appearance.
   if question.type is \inputDate
     question.appearance = date-kind-conversion[question.kind] if date-type-conversion[question.kind]?
+
+  # field-list appearance.
+  if (delete question.fieldList) is true
+    question.appearance = \field-list
 
   # massage the type.
   question.type =
