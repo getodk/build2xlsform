@@ -38,6 +38,17 @@ describe \type ->
     result = { type: \inputDate } |> convert-simple
     expect(result.type).toBe(\date)
 
+    result = { type: \inputDate, kind: \Date } |> convert-simple
+    expect(result.type).toBe(\date)
+
+  test \datetime ->
+    result = { type: \inputDate, kind: 'Date and Time' } |> convert-simple
+    expect(result.type).toBe(\dateTime)
+
+  test \time ->
+    result = { type: \inputTime } |> convert-simple
+    expect(result.type).toBe(\time)
+
   test \location ->
     result = { type: \inputLocation } |> convert-simple
     expect(result.type).toBe(\geopoint)

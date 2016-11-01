@@ -31,6 +31,10 @@ choice-type-conversion =
   inputSelectOne: \select_one
   inputSelectMany: \select_multiple
 
+date-type-conversion =
+  'Date': \date
+  'Date and Time': \dateTime
+
 metadata-type-conversion =
   'Device Id': \deviceid
   'Start Time': \start
@@ -94,9 +98,11 @@ convert-question = (question, context, prefix = []) ->
   # massage the type.
   question.type =
     if question.type is \inputNumeric
-      ((delete question.kind) ? \integer).toLowerCase() # oh my. why did i capitalize this field?
+      ((delete question.kind) ? \integer).toLowerCase()
     else if question.type is \inputMedia
-      ((delete question.kind) ? \image).toLowerCase() # and here too.
+      ((delete question.kind) ? \image).toLowerCase()
+    else if question.type is \inputDate
+      date-type-conversion[(delete question.kind) ? 'Date']
     else if question.type is \metadata
       metadata-type-conversion[(delete question.kind) ? 'Device ID']
     else if question.type is \group
