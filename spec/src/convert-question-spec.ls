@@ -38,11 +38,11 @@ describe \type ->
     result = { type: \inputDate } |> convert-simple
     expect(result.type).toBe(\date)
 
-    result = { type: \inputDate, kind: \Date } |> convert-simple
+    result = { type: \inputDate, kind: 'Full Date' } |> convert-simple
     expect(result.type).toBe(\date)
 
   test \datetime ->
-    result = { type: \inputDate, kind: 'Date and Time' } |> convert-simple
+    result = { type: \inputDate, kind: 'Full Date and Time' } |> convert-simple
     expect(result.type).toBe(\dateTime)
 
   test \time ->
@@ -246,7 +246,6 @@ describe 'calculation' ->
 # repeat_count is in the xlsform spec but is not in the build featureset.
 # embedded media are in the xlsform spec but are not in the build featureset.
 
-# appearance is in the xlsform spec; the only use of it in build is here:
 describe 'appearance' ->
   test 'group fieldlist flag becomes appearance prop if true' ->
     result = { type: \group, fieldList: true } |> convert-simple
@@ -257,6 +256,28 @@ describe 'appearance' ->
     result = { type: \group, fieldList: false } |> convert-simple
     expect(result.fieldList).toBe(undefined)
     expect(result.appearance).toBe(undefined)
+
+  test 'date precision: default' ->
+    result = { type: \inputDate } |> convert-simple
+    expect(result.type).toBe(\date)
+    expect(result.appearance).toBe(undefined)
+
+  test 'date precision: date and time' ->
+    result = { type: \inputDate, kind: 'Full Date and Time' } |> convert-simple
+    expect(result.type).toBe(\dateTime)
+    expect(result.appearance).toBe(undefined)
+
+  test 'date precision: year and month' ->
+    result = { type: \inputDate, kind: 'Year and Month' } |> convert-simple
+    expect(result.type).toBe(\date)
+    expect(result.appearance).toBe(\month-year)
+    expect(result.kind).toBe(undefined)
+
+  test 'date precision: year' ->
+    result = { type: \inputDate, kind: 'Year' } |> convert-simple
+    expect(result.type).toBe(\date)
+    expect(result.appearance).toBe(\year)
+    expect(result.kind).toBe(undefined)
 
 ## from here on, we cover features not part of the xlsform spec.
 

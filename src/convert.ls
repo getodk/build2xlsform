@@ -31,8 +31,14 @@ choice-type-conversion =
   inputSelectMany: \select_multiple
 
 date-type-conversion =
-  'Date': \date
-  'Date and Time': \dateTime
+  'Full Date and Time': \dateTime
+  'Full Date': \date
+  'Year and Month': \date
+  'Year': \date
+
+date-kind-conversion =
+  'Year and Month': \month-year
+  'Year': \year
 
 location-type-conversion =
   'Point': \geopoint
@@ -99,6 +105,10 @@ convert-question = (question, context, prefix = []) ->
     context.warnings ++= [ "Multiple choice lists have the ID '#choice-id'. The last one encountered is used." ] if context.choices[choice-id]?
     context.choices[choice-id] = (delete question.options)
 
+  # if date, we may need to apply an appearance.
+  if question.type is \inputDate
+    question.appearance = date-kind-conversion[question.kind] if date-type-conversion[question.kind]?
+
   # massage the type.
   question.type =
     if question.type is \inputNumeric
@@ -106,7 +116,7 @@ convert-question = (question, context, prefix = []) ->
     else if question.type is \inputMedia
       ((delete question.kind) ? \image).toLowerCase()
     else if question.type is \inputDate
-      date-type-conversion[(delete question.kind) ? 'Date']
+      date-type-conversion[(delete question.kind) ? 'Full Date']
     else if question.type is \inputLocation
       location-type-conversion[(delete question.kind) ? 'Point']
     else if question.type is \metadata
