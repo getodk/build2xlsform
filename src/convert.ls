@@ -35,6 +35,11 @@ metadata-type-conversion =
   'Device Id': \deviceid
   'Start Time': \start
   'End Time': \end
+  'Today': \today
+  'Username': \username
+  'Subscriber ID': \subscriberid
+  'SIM Serial': \simserial
+  'Phone Number': \phonenumber
 
 # make unit testing easier.
 new-context = -> { seen-fields: {}, choices: {}, warnings: [] }

@@ -71,6 +71,21 @@ describe \type ->
     end = { type: \metadata, kind: 'End Time' } |> convert-simple
     expect(end.type).toBe(\end)
 
+    today = { type: \metadata, kind: 'Today' } |> convert-simple
+    expect(today.type).toBe(\today)
+
+    username = { type: \metadata, kind: 'Username' } |> convert-simple
+    expect(username.type).toBe(\username)
+
+    subscriberid = { type: \metadata, kind: 'Subscriber ID' } |> convert-simple
+    expect(subscriberid.type).toBe(\subscriberid)
+
+    simserial = { type: \metadata, kind: 'SIM Serial' } |> convert-simple
+    expect(simserial.type).toBe(\simserial)
+
+    phonenumber = { type: \metadata, kind: 'Phone Number' } |> convert-simple
+    expect(phonenumber.type).toBe(\phonenumber)
+
   test 'select one' ->
     basic = { name: \test_select, type: \inputSelectOne, options: [] } |> convert-simple
     expect(basic.type).toBe('select_one choices_test_select')
