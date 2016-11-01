@@ -179,6 +179,14 @@ describe \constraint ->
     result = { type: \inputText, range: false } |> convert-simple
     expect(result.constraint).toBe(undefined)
 
+  test 'build select multiple response count constraint generation' ->
+    result = { type: \inputSelectMany, count: { min: 3, max: 9, maxInclusive: true } } |> convert-simple
+    expect(result.constraint).toBe('(count-selected(.) > 3) and (count-selected(.) <= 9)')
+
+  test 'build select multiple response count false pruning' ->
+    result = { type: \inputSelectMany, count: false } |> convert-simple
+    expect(result.constraint).toBe(undefined)
+
   test 'custom constraint merging with build generation' ->
     result = { type: \inputNumber, constraint: '. != 5' range: { min: 3, max: 9 } } |> convert-simple
     expect(result.constraint).toBe('(. != 5) and (. > 3) and (. < 9)')

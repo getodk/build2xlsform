@@ -15,7 +15,7 @@ survey-fields = <[ type name label hint required read_only default constraint co
 choices-fields = [ 'list name', \name, \label ]
 
 multilingual-fields = <[ label hint constraint_message ]> # these fields have ::lang syntax/support.
-prune-false = <[ required read_only range length ]> # these fields default to 'no', so just leave them out for a cleaner output.
+prune-false = <[ required read_only range length count ]> # these fields default to 'no', so just leave them out for a cleaner output.
 
 fieldname-conversion =
   defaultValue: \default
@@ -65,6 +65,11 @@ appearance-conversion =
 # make unit testing easier.
 new-context = -> { seen-fields: {}, choices: {}, warnings: [] }
 
+# creates a range expression.
+gen-range = (range, self = \.) ->
+    [ "#self >#{if range.minInclusive is true then \= else ''} #{expr-value(range.min)}",
+      "#self <#{if range.maxInclusive is true then \= else ''} #{expr-value(range.max)}" ]
+
 # returns an intermediate-formatted question clone (purely functional), but mutates context.
 convert-question = (question, context, prefix = []) ->
   # full clone.
@@ -94,9 +99,10 @@ convert-question = (question, context, prefix = []) ->
     question.constraint = (question.constraint ? []) ++ "regex(., \"^.{#{length.min},#{length.max}}$\")"
   # merge number/date range.
   if (range = delete question.range)?
-    question.constraint = (question.constraint ? []) ++
-      ". >#{if range.minInclusive is true then \= else ''} #{expr-value(range.min)}" ++
-      ". <#{if range.maxInclusive is true then \= else ''} #{expr-value(range.max)}"
+    question.constraint = (question.constraint ? []) ++ gen-range(range)
+  # merge select multiple choice count range.
+  if (count = delete question.count)?
+    question.constraint = (question.constraint ? []) ++ gen-range(count, 'count-selected(.)')
   # convert constraint field back into an expression.
   if question.constraint.length is 0
     delete question.constraint
