@@ -49,9 +49,20 @@ describe \type ->
     result = { type: \inputTime } |> convert-simple
     expect(result.type).toBe(\time)
 
-  test \location ->
+  test \geopoint ->
     result = { type: \inputLocation } |> convert-simple
     expect(result.type).toBe(\geopoint)
+
+    result = { type: \inputLocation, kind: \Point } |> convert-simple
+    expect(result.type).toBe(\geopoint)
+
+  test \geotrace ->
+    result = { type: \inputLocation, kind: \Path } |> convert-simple
+    expect(result.type).toBe(\geotrace)
+
+  test \geoshape ->
+    result = { type: \inputLocation, kind: \Shape } |> convert-simple
+    expect(result.type).toBe(\geoshape)
 
   test 'media: image' ->
     explicit = { type: \inputMedia, kind: \Image } |> convert-simple

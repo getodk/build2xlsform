@@ -24,8 +24,7 @@ fieldname-conversion =
   invalidText: \constraint_message
   readOnly: \read_only
 
-type-conversion =
-  inputLocation: \geopoint
+type-conversion = {} # currently unused
 
 choice-type-conversion =
   inputSelectOne: \select_one
@@ -34,6 +33,11 @@ choice-type-conversion =
 date-type-conversion =
   'Date': \date
   'Date and Time': \dateTime
+
+location-type-conversion =
+  'Point': \geopoint
+  'Path': \geotrace
+  'Shape': \geoshape
 
 metadata-type-conversion =
   'Device Id': \deviceid
@@ -103,6 +107,8 @@ convert-question = (question, context, prefix = []) ->
       ((delete question.kind) ? \image).toLowerCase()
     else if question.type is \inputDate
       date-type-conversion[(delete question.kind) ? 'Date']
+    else if question.type is \inputLocation
+      location-type-conversion[(delete question.kind) ? 'Point']
     else if question.type is \metadata
       metadata-type-conversion[(delete question.kind) ? 'Device ID']
     else if question.type is \group
