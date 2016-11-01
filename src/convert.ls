@@ -160,6 +160,8 @@ convert-question = (question, context, prefix = []) ->
   # return. context is mutated (:/) so does not need to be returned.
   question
 
+gen-settings = (form) -> [ [ \form_title, \form_id ], [ form.title, "build_#{form.title?.replace(/([^a-z0-9]+)/ig, '-')}_#{(new Date()).getTime() / 1000}" ] ]
+
 # the main show.
 convert-form = (form) ->
   # convert build question data to intermediate xls-json form.
@@ -197,6 +199,7 @@ convert-form = (form) ->
   [
     { name: \survey, data: ([ survey-schema ] ++ survey-rows) },
     { name: \choices, data: ([ choices-schema ] ++ choices-rows) },
+    { name: \settings, data: gen-settings(form) },
     { name: \warnings, data: [ [[ warning ]] for warning in ([ 'message' ] ++ (warnings ? [ 'No warnings; everything looked fine.' ])) ] }
   ]
 
@@ -209,5 +212,5 @@ serialize-form = (stream, sheets) -->
   stream.end()
 
 # export everything for unit testing; most people should only need convert-form/serialize-form.
-module.exports = { new-context, convert-question, convert-form, serialize-form }
+module.exports = { new-context, convert-question, convert-form, gen-settings, serialize-form }
 

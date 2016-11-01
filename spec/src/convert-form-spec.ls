@@ -1,7 +1,7 @@
 # work around livescript syntax.
 test = it
 
-{ convert-form } = require('../lib/convert')
+{ convert-form, gen-settings } = require('../lib/convert')
 
 # because convert-form depends on accrued context from repeatedly calling
 # convert-question and thus calls convert-question itself, this set of tests
@@ -286,4 +286,23 @@ describe 'complex row generation' ->
 
       expect(result[0].data[1]).toEqual([ 'begin repeat', \mygroup ])
       expect(result[0].data[2]).toEqual([ 'end repeat' ])
+
+describe 'settings generation' ->
+  test 'generates expected fields and values' ->
+    result = gen-settings({ title: \myform })
+
+    expect(result[0]).toEqual([ \form_title, \form_id ])
+    expect(result[1][0]).toBe(\myform)
+    expect(result[1][1]).toMatch(/build_myform_[0-9]+/)
+
+  test 'sanitizes form title' ->
+    result = gen-settings({ title: 'Untitled! Test Form' })
+    expect(result[1][1]).toMatch(/build_Untitled-Test-Form_[0-9]+/)
+
+  test 'part of complete workbook generation' ->
+    result = convert-form({ title: 'Test Form', metadata: { activeLanguages: [ \en ] }, controls: [] })
+    expect(result[2].name).toBe(\settings)
+    expect(result[2].data[0]).toEqual([ \form_title, \form_id ])
+    expect(result[2].data[1][0]).toBe('Test Form')
+    expect(result[2].data[1][1]).toMatch(/build_Test-Form_[0-9]+/)
 

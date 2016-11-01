@@ -20,6 +20,7 @@ All the relevant code is in `/src`. There are only two files:
 * `convert.ls` is a three-part library file which handles the actual conversion.
     * `convert-question()` takes a single question and translates the original Build data objects into an intermediate data object format that's ready for serialization to a tabular format. It's largely useless outside the context of this library, and is exposed primarily for unit testing.
     * `convert-form()` takes the entire Build form as a data object, converts all questions with `convert-question()`, determines the appropriate schema for a tabular output, and generates the final workbook sheets as objects and arrays.
+    * `gen-settings()` is a simple function that takes form data and returns a basic settings spreadsheet with just a form title and form id.
     * `serialize-form()` takes the output of `convert-form()` (or indeed any sheet data compatible with `node-xlsx`) and a nodejs stdlib `HttpResponse` object, and handles the conversion from data objects to XLSX binary, serialization out, and stream lifecycle.
 * `server.ls` is a dead-simple **express** webserver that exposes a single HTTP endpoint at `POST /convert`, takes JSON as the POST-body (with a request `Content-Type` of `application/json`), and responds with an attachment-disposition binary stream of the XLSX result.
 
