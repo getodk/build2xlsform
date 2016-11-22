@@ -1,6 +1,7 @@
 { is-type, map, filter, foldl, join, flatten } = require(\prelude-ls)
 { keys, empty } = require(\prelude-ls).Obj
 deepcopy = require(\deepcopy)
+{ write-file } = require(\fs)
 { build } = require(\node-xlsx).default
 
 # util.
@@ -217,6 +218,9 @@ serialize-form = (stream, sheets) -->
   stream.statusCode = 200
   stream.end()
 
+# takes sheets, writes .xlsx.
+write-form = (path, sheets, callback) --> write-file(path, build(sheets), callback)
+
 # export everything for unit testing; most people should only need convert-form/serialize-form.
-module.exports = { new-context, convert-question, convert-form, gen-settings, serialize-form }
+module.exports = { new-context, convert-question, convert-form, gen-settings, serialize-form, write-form }
 
