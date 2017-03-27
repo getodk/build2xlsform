@@ -176,11 +176,12 @@ convert-form = (form) ->
   intermediate = [ convert-question(question, context) for question in form.controls ]
 
   # pull apart some context for easy referencing.
-  languages = form.metadata.active-languages
+  languages = form.metadata.active-languages |> keys |> filter(-> not /^_/.test(it))
+  language-names = { [ language, form.metadata.active-languages[language] ] for language in languages }
   { seen-fields, choices, warnings } = context
 
   # determine final schema for each sheet.
-  expand-languages = (field) -> if field in multilingual-fields then [ "#field::#language" for language in languages ] else [ field ]
+  expand-languages = (field) -> if field in multilingual-fields then [ "#field::#{language-names[language]}" for language in languages ] else [ field ]
   gen-schema = (seen, all) -> all |> filter (in seen) |> foldl(((fields, field) -> fields ++ expand-languages(field)), [])
   survey-schema = gen-schema(keys(seen-fields), survey-fields)
   choices-schema = gen-schema(choices-fields, choices-fields)
