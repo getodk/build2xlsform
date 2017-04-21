@@ -20,7 +20,7 @@ describe 'schema generation:' ->
     test 'basic fields based on a question' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \en ]
+          activeLanguages: { 0: \English, _counter: 0 }
         controls: [
           { type: \inputText, name: \my_field, constraint: '. != "xyz"' }
         ]
@@ -31,7 +31,7 @@ describe 'schema generation:' ->
     test 'basic fields based on multiple questions' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \en ]
+          activeLanguages: { 0: \English, _counter: 0 }
         controls: [
           { type: \inputText, name: \my_field, constraint: '. != "xyz"' },
           { type: \inputText, name: \your_field, required: true }
@@ -43,7 +43,7 @@ describe 'schema generation:' ->
     test 'ignores pruned fields' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \en ]
+          activeLanguages: { 0: \English, _counter: 0 }
         controls: [
           { type: \inputText, name: \my_field, label: {}, readOnly: false },
           { type: \inputText, name: \your_field, required: false }
@@ -55,7 +55,7 @@ describe 'schema generation:' ->
     test 'ignores nonsense fields' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \en ]
+          activeLanguages: { 0: \English, _counter: 0 }
         controls: [
           { type: \inputText, name: \my_field, nonsense: \test },
           { type: \inputText, name: \your_field, other_nonsense: 3 }
@@ -67,10 +67,10 @@ describe 'schema generation:' ->
     test 'generates appropriate language-keyed fields' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \en, \sv, \hi ]
+          activeLanguages: { 0: \en, 1: \sv, 2: \hi, _counter: 2 }
         controls: [
-          { type: \inputText, label: { en: \hello }, hint: { en: \hi } },
-          { type: \inputText, constraint_message: { hi: \challo } }
+          { type: \inputText, label: { 0: \hello }, hint: { 0: \hi } },
+          { type: \inputText, constraint_message: { 2: \challo } }
         ]
       )
 
@@ -80,7 +80,7 @@ describe 'schema generation:' ->
     test 'generation incl language-keyed fields' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \en, \es ]
+          activeLanguages: { 0: \en, 1: \es, _counter: 1 }
         controls: [ ]
       )
 
@@ -91,7 +91,7 @@ describe 'row generation:' ->
     test 'basic values end up in the correct spot' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \en ]
+          activeLanguages: { 0: \en, _counter: 0 }
         controls: [
           { type: \inputText, name: \my_field, constraint: '. != "xyz"' }
         ]
@@ -102,7 +102,7 @@ describe 'row generation:' ->
     test 'absent values end up appropriately blank' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \en ]
+          activeLanguages: { 0: \en, _counter: 0 }
         controls: [
           { type: \inputText, name: \my_field },
           { type: \inputText, name: \other_field, required: true, readOnly: true }
@@ -114,7 +114,7 @@ describe 'row generation:' ->
     test 'appropriate number of rows in result' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \en ]
+          activeLanguages: { 0: \en, _counter: 0 }
         controls: [
           { type: \inputText, name: \my_field },
           { type: \inputText, name: \other_field },
@@ -127,9 +127,9 @@ describe 'row generation:' ->
     test 'language-keyed fields correctly populated' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \sv, \en ] # n.b. intentionally reversed from below.
+          activeLanguages: { 0: \sv, 1: \en, _counter: 1 }
         controls: [
-          { type: \inputText, label: { en: \hello, sv: \hej }, hint: { en: \thanks, sv: \tack } }
+          { type: \inputText, label: { 1: \hello, 0: \hej }, hint: { 1: \thanks, 0: \tack } }
         ]
       )
 
@@ -138,9 +138,9 @@ describe 'row generation:' ->
     test 'partially missing language-keyed fields appropriately blank' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \en, \sv ]
+          activeLanguages: { 0: \en, 1: \sv, _counter: 1 }
         controls: [
-          { type: \inputText, label: { en: \hello }, hint: { sv: \tack } }
+          { type: \inputText, label: { 0: \hello }, hint: { 1: \tack } }
         ]
       )
 
@@ -149,10 +149,10 @@ describe 'row generation:' ->
     test 'entirely missing language-keyed fields appropriately blank' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \sv, \en ]
+          activeLanguages: { 0: \sv, 1: \en, _counter: 1 }
         controls: [
-          { type: \inputText, label: { en: \hello } },
-          { type: \inputText, hint: { sv: \tack } }
+          { type: \inputText, label: { 1: \hello } },
+          { type: \inputText, hint: { 0: \tack } }
         ]
       )
 
@@ -162,10 +162,10 @@ describe 'row generation:' ->
     test 'choice data correctly mapped' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \en ]
+          activeLanguages: { 0: \en, _counter: 0 }
         controls: [
           { type: \inputSelectOne, name: \testselect, options: [
-            { text: { en: 'option a' }, val: \alpha }
+            { text: { 0: 'option a' }, val: \alpha }
           ] }
         ]
       )
@@ -175,19 +175,19 @@ describe 'row generation:' ->
     test 'expected number of choices outputted' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \en ]
+          activeLanguages: { 0: \en, _counter: 0 }
         controls: [
           { type: \inputSelectOne, name: \testselect, options: [
-            { text: { en: 'option a' }, val: \alpha },
-            { text: { en: 'option b' }, val: \bravo },
-            { text: { en: 'option c' }, val: \charlie },
-            { text: { en: 'option d' }, val: \delta }
+            { text: { 0: 'option a' }, val: \alpha },
+            { text: { 0: 'option b' }, val: \bravo },
+            { text: { 0: 'option c' }, val: \charlie },
+            { text: { 0: 'option d' }, val: \delta }
           ] },
           { type: \inputSelectMany, name: \testselecttwo, options: [
-            { text: { en: 'option e' }, val: \echo },
-            { text: { en: 'option f' }, val: \foxtrot },
-            { text: { en: 'option g' }, val: \golf },
-            { text: { en: 'option h' }, val: \hotel }
+            { text: { 0: 'option e' }, val: \echo },
+            { text: { 0: 'option f' }, val: \foxtrot },
+            { text: { 0: 'option g' }, val: \golf },
+            { text: { 0: 'option h' }, val: \hotel }
           ] }
         ]
       )
@@ -207,12 +207,12 @@ describe 'row generation:' ->
     test 'language-keyed field appropriately filled' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \en, \es ]
+          activeLanguages: { 0: \en, 1: \es, _counter: 1 }
         controls: [
           { type: \inputSelectOne, name: \testselect, options: [
-            { text: { en: 'option a' }, val: \alpha },
-            { text: { es: 'opción b' }, val: \bravo },
-            { text: { en: 'option c', es: 'opción c' }, val: \charlie },
+            { text: { 0: 'option a' }, val: \alpha },
+            { text: { 1: 'opción b' }, val: \bravo },
+            { text: { 0: 'option c', 1: 'opción c' }, val: \charlie },
             { val: \delta }
           ] }
         ]
@@ -230,7 +230,7 @@ describe 'complex row generation' ->
   test 'generates begin and end rows for groups' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \en ]
+          activeLanguages: { 0: \en, _counter: 0 }
         controls: [{ type: \group, name: \mygroup, children: [] }]
       )
 
@@ -240,10 +240,10 @@ describe 'complex row generation' ->
   test 'generates child rows for questions nested in groups' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \en ]
+          activeLanguages: { 0: \en, _counter: 0 }
         controls: [{ type: \group, name: \mygroup, children: [
-          { type: \inputText, name: \aquestion, label: { en: 'question one' } },
-          { type: \inputText, name: \bquestion, label: { en: 'question two' } }
+          { type: \inputText, name: \aquestion, label: { 0: 'question one' } },
+          { type: \inputText, name: \bquestion, label: { 0: 'question two' } }
         ] }]
       )
 
@@ -258,11 +258,11 @@ describe 'complex row generation' ->
   test 'groups nest correctly' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \en ]
+          activeLanguages: { 0: \en, _counter: 0 }
         controls: [{ type: \group, name: \mygroup, children: [
-          { type: \inputText, name: \aquestion, label: { en: 'question one' } },
+          { type: \inputText, name: \aquestion, label: { 0: 'question one' } },
           { type: \group, name: \yourgroup, children: [
-            { type: \inputText, name: \bquestion, label: { en: 'question two' } }
+            { type: \inputText, name: \bquestion, label: { 0: 'question two' } }
           ]}
         ] }]
       )
@@ -280,7 +280,7 @@ describe 'complex row generation' ->
   test 'loop option creates repeats' ->
       result = convert-form(
         metadata:
-          activeLanguages: [ \en ]
+          activeLanguages: { 0: \en, _counter: 0 }
         controls: [{ type: \group, name: \mygroup, loop: true, children: [] }]
       )
 
@@ -300,7 +300,7 @@ describe 'settings generation' ->
     expect(result[1][1]).toMatch(/build_Untitled-Test-Form_[0-9]+/)
 
   test 'part of complete workbook generation' ->
-    result = convert-form({ title: 'Test Form', metadata: { activeLanguages: [ \en ] }, controls: [] })
+    result = convert-form({ title: 'Test Form', metadata: { activeLanguages: { 0: \en, _counter: 0 } }, controls: [] })
     expect(result[2].name).toBe(\settings)
     expect(result[2].data[0]).toEqual([ \form_title, \form_id ])
     expect(result[2].data[1][0]).toBe('Test Form')
