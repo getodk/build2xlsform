@@ -231,6 +231,23 @@ describe 'relevant' ->
     result = { type: \inputText, relevance: 'some_var > 1' } |> convert-simple
     expect(result.relevance).toBe(undefined)
 
+describe 'followup question' ->
+  test 'appropriate value is assigned to context' ->
+    context = new-context()
+    result = convert-question({ type: \inputSelectOne, name: \testquestion, other: [ \testvalue ] }, context)
+    expect(context.successor-relevance).toBe("selected(testquestion, 'testvalue')")
+
+  test 'appropriate expression is pulled from context' ->
+    context = new-context() with successor-relevance: "selected(testquestion, 'testvalue')"
+    result = convert-question({ type: \inputText }, context)
+    expect(result.relevant).toBe("(selected(testquestion, 'testvalue'))")
+    expect(context.successor-relevance).toBe(undefined)
+
+  test 'context is cleared at the end of group scope' ->
+    context = new-context()
+    convert-question({ type: \group, children: [{ type: \inputSelectOne, name: \test, other: [ \test ] }] }, context)
+    expect(context.successor-relevance).toBe(undefined)
+
 describe 'read_only' ->
   test 'true becomes yes' ->
     result = { type: \inputText, readOnly: true } |> convert-simple

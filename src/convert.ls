@@ -110,6 +110,14 @@ convert-question = (question, context, prefix = []) ->
   else
     question.constraint = question.constraint |> map(-> "(#it)") |> join(' and ')
 
+  ## merge in convenience relevant logic definitions:
+  if (successor-relevance = delete context.successor-relevance)?
+    question.relevant = (question.relevant ? []) ++ [ successor-relevance ] |> map(-> "(#it)") |> (.join(' and '))
+
+  ## drop successor information into context:
+  if (other = delete question.other)?
+    context.successor-relevance = other |> map(-> "selected(#{question.name}, '#it')") |> join(' or ')
+
   # deal with choices. life is hard.
   if question.options?
     context.warnings ++= [ "Multiple choice lists have the ID '#choice-id'. The last one encountered is used." ] if context.choices[choice-id]?
@@ -163,6 +171,7 @@ convert-question = (question, context, prefix = []) ->
   # recurse.
   if question.children?
     question.children = [ convert-question(child, context, prefix) for child in question.children ]
+    delete context.successor-relevance
 
   # return. context is mutated (:/) so does not need to be returned.
   question
