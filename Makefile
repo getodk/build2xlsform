@@ -17,7 +17,7 @@ build: $(LIB)
 SPEC_SRC = $(shell find spec -name "*.ls" -type f | sort)
 SPEC_LIB = $(SPEC_SRC:spec/src/%.ls=spec/%.js)
 
-spec/%.js: spec/src/*.ls node_modules
+spec/%.js: spec/src/%.ls node_modules
 	node node_modules/livescript/bin/lsc --output spec --compile "$<"
 
 build-tests: $(SPEC_LIB)
