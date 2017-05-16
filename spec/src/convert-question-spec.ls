@@ -84,7 +84,7 @@ describe \type ->
     expect(result.type).toBe(\barcode)
 
   test \metadata ->
-    deviceid = { type: \metadata, kind: 'Device Id' } |> convert-simple
+    deviceid = { type: \metadata, kind: 'Device ID' } |> convert-simple
     expect(deviceid.type).toBe(\deviceid)
 
     start = { type: \metadata, kind: 'Start Time' } |> convert-simple

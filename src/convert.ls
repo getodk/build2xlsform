@@ -47,7 +47,7 @@ location-type-conversion =
   'Shape': \geoshape
 
 metadata-type-conversion =
-  'Device Id': \deviceid
+  'Device ID': \deviceid
   'Start Time': \start
   'End Time': \end
   'Today': \today
