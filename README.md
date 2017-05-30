@@ -13,6 +13,10 @@ The project depends on **nodejs**; we officially support versions 5 and 6. Make 
 
 Once you have that, you should be able to simply `make` to trigger a build. The Makefile handles running `npm install`, but if you into issues performing that step on your own is a good troubleshooting start.
 
+running
+-------
+Run `node lib/server.js` to run the build2xlsform service. It runs on port 8686 by default, and on this port the development version of ODK Build will automatically proxy requests through to the service.
+
 project
 -------
 All the relevant code is in `/src`. There are only two files:
