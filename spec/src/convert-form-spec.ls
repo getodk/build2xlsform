@@ -295,6 +295,10 @@ describe 'settings generation' ->
     expect(result[1][0]).toBe(\myform)
     expect(result[1][1]).toMatch(/build_myform_[0-9]+/)
 
+  test 'uses metadata htitle for form title if provided' ->
+    result = gen-settings({ title: \myform, metadata: { htitle: 'override title' } })
+    expect(result[1][0]).toBe('override title')
+
   test 'sanitizes form title' ->
     result = gen-settings({ title: 'Untitled! Test Form' })
     expect(result[1][1]).toMatch(/build_Untitled-Test-Form_[0-9]+/)

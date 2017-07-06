@@ -176,7 +176,12 @@ convert-question = (question, context, prefix = []) ->
   # return. context is mutated (:/) so does not need to be returned.
   question
 
-gen-settings = (form) -> [ [ \form_title, \form_id ], [ form.title, "build_#{form.title?.replace(/([^a-z0-9]+)/ig, '-')}_#{Math.floor((new Date()).getTime() / 1000)}" ] ]
+gen-settings = (form) ->
+  form-title = if is-nonsense(form.metadata?.htitle) then form.title else form.metadata?.htitle
+  form-id = "build_#{form.title?.replace(/([^a-z0-9]+)/ig, '-')}_#{Math.floor((new Date()).getTime() / 1000)}"
+
+  [ [ \form_title, \form_id ],
+    [ form-title, form-id ] ]
 
 # the main show.
 convert-form = (form) ->
