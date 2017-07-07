@@ -299,7 +299,24 @@ describe 'settings generation' ->
     result = gen-settings({ title: \myform, metadata: { htitle: 'override title' } })
     expect(result[1][0]).toBe('override title')
 
-  test 'sanitizes form title' ->
+  test 'passes through basic metadata properties' ->
+    # do it in two passes to ensure partial generation works:
+    result = gen-settings({ title: \myform, metadata: { public_key: 'testkey', submission_url: 'testurl' } })
+    expect(result[0][2]).toBe(\public_key)
+    expect(result[1][2]).toBe(\testkey)
+    expect(result[0][3]).toBe(\submission_url)
+    expect(result[1][3]).toBe(\testurl)
+
+    result = gen-settings({ title: \myform, metadata: { instance_name: 'testname' } })
+    expect(result[0][2]).toBe(\instance_name)
+    expect(result[1][2]).toBe(\testname)
+
+  test 'passes through user-specified version', ->
+    result = gen-settings({ title: \myform, metadata: { user_version: 'testversion' } })
+    expect(result[0][2]).toBe(\version)
+    expect(result[1][2]).toBe(\testversion)
+
+  test 'sanitizes form title for form_id' ->
     result = gen-settings({ title: 'Untitled! Test Form' })
     expect(result[1][1]).toMatch(/build_Untitled-Test-Form_[0-9]+/)
 
