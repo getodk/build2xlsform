@@ -12,7 +12,7 @@ expr-value = (value) ->
   | otherwise                 => value
 
 # conversion constants.
-survey-fields = <[ type name label hint required read_only default constraint constraint_message relevant calculation appearance ]>
+survey-fields = <[ type name label hint required read_only default constraint constraint_message relevant calculation parameters appearance ]>
 choices-fields = [ 'list name', \name, \label ]
 
 multilingual-fields = <[ label hint constraint_message ]> # these fields have ::lang syntax/support.
@@ -56,12 +56,18 @@ metadata-type-conversion =
   'SIM Serial': \simserial
   'Phone Number': \phonenumber
 
+appearance-noops = [ 'Default (GPS)', 'Default' ]
+
 appearance-conversion =
   'Show Map (GPS)': \maps
   'Manual (No GPS)': \placement-map
   'Minimal (spinner)': \minimal
   'Table': \label
   'Horizontal Layout': \horizontal
+
+range-appearance-conversion =
+  'Vertical Slider': \vertical
+  'Picker': \picker
 
 # make unit testing easier.
 new-context = -> { seen-fields: {}, choices: {}, warnings: [] }
@@ -124,7 +130,9 @@ convert-question = (question, context, prefix = []) ->
     context.choices[choice-id] = (delete question.options)
 
   # appearance value-massaging.
-  if question.appearance?
+  if question.appearance in appearance-noops
+    delete question.appearance
+  if appearance-conversion[question.appearance]?
     question.appearance = appearance-conversion[delete question.appearance]
 
   # if date, we may need to apply an appearance.
@@ -138,7 +146,11 @@ convert-question = (question, context, prefix = []) ->
   # massage the type.
   question.type =
     if question.type is \inputNumeric
-      ((delete question.kind) ? \integer).toLowerCase()
+      if !question.appearance? or question.appearance is \Textbox
+        delete question.appearance
+        ((delete question.kind) ? \integer).toLowerCase()
+      else
+        \range
     else if question.type is \inputMedia
       ((delete question.kind) ? \image).toLowerCase()
     else if question.type is \inputDate
@@ -156,9 +168,21 @@ convert-question = (question, context, prefix = []) ->
     else
       question.type.slice(5).toLowerCase()
 
+  # range parameters.
+  if question.type is \range
+    select-range = (delete question.selectRange)
+    question.parameters = { start: select-range?.min, end: select-range?.max, step: (delete question.selectStep) }
+    question.appearance = range-appearance-conversion[delete question.appearance]
+    if question.sliderTicks is false
+      question.appearance = ((question.appearance ? '') + ' no-ticks').trim()
+
   # boolean value conversion. do this near the end to prevent confusion.
   for key, value of question when value is true or value is false
     question[key] = if value is true then \yes else \no
+
+  # convert the parameters field.
+  if question.parameters?
+    question.parameters = ([ "#key=#{JSON.stringify(value)}" for key, value of question.parameters ]).join(' ')
 
   # mark the schema fields we've seen.
   for key of question

@@ -23,7 +23,15 @@ describe \type ->
     result = { type: \inputText } |> convert-simple
     expect(result.type).toBe(\text)
 
+  test 'number: range' ->
+    for appearance in [ 'Slider', 'Vertical Slider', 'Picker' ]
+      result = { type: \inputNumeric, appearance } |> convert-simple
+      expect(result.type).toBe(\range)
+
   test 'number: integer' ->
+    really-explicit = { type: \inputNumeric, appearance: \Textbox, kind: \Integer } |> convert-simple
+    expect(really-explicit.type).toBe(\integer)
+
     explicit = { type: \inputNumeric, kind: \Integer } |> convert-simple
     expect(explicit.type).toBe(\integer)
 
@@ -31,6 +39,9 @@ describe \type ->
     expect(implicit.type).toBe(\integer)
 
   test 'number: decimal' ->
+    really-explicit = { type: \inputNumeric, appearance: \Textbox, kind: \Decimal } |> convert-simple
+    expect(really-explicit.type).toBe(\decimal)
+
     result = { type: \inputNumeric, kind: \Decimal } |> convert-simple
     expect(result.type).toBe(\decimal)
 
@@ -272,6 +283,25 @@ describe 'calculation' ->
 # embedded media are in the xlsform spec but are not in the build featureset.
 
 describe 'appearance' ->
+  test 'numeric appearances' ->
+    result = { type: \inputNumeric, appearance: 'Textbox' } |> convert-simple
+    expect(result.appearance).toBe(undefined)
+
+    result = { type: \inputNumeric, appearance: 'Slider' } |> convert-simple
+    expect(result.appearance).toBe(undefined)
+
+    result = { type: \inputNumeric, appearance: 'Slider', sliderTicks: false } |> convert-simple
+    expect(result.appearance).toBe(\no-ticks)
+
+    result = { type: \inputNumeric, appearance: 'Vertical Slider' } |> convert-simple
+    expect(result.appearance).toBe(\vertical)
+
+    result = { type: \inputNumeric, appearance: 'Vertical Slider', sliderTicks: false } |> convert-simple
+    expect(result.appearance).toBe('vertical no-ticks')
+
+    result = { type: \inputNumeric, appearance: 'Picker' } |> convert-simple
+    expect(result.appearance).toBe(\picker)
+
   test 'group fieldlist flag becomes appearance prop if true' ->
     result = { type: \group, fieldList: true } |> convert-simple
     expect(result.fieldList).toBe(undefined)
@@ -403,4 +433,10 @@ describe 'group children' ->
       }]
     }, context)
     expect(context.choices.choices_layer1_layer2_aselect).toEqual(choices)
+
+describe 'parameters' ->
+  test 'range' ->
+    for appearance in [ 'Slider', 'Vertical Slider', 'Picker' ]
+      result = { type: \inputNumeric, appearance, selectRange: { min: 13, max: 42 }, selectStep: 1.5 } |> convert-simple
+      expect(result.parameters).toBe('start=13 end=42 step=1.5')
 
