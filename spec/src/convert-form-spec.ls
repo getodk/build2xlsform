@@ -226,6 +226,113 @@ describe 'row generation:' ->
         [ \choices_testselect, \delta, undefined, undefined ]
       ])
 
+    test 'single cascading select', ->
+      result = convert-form(
+        metadata:
+          activeLanguages: { 0: \en, _counter: 0 }
+        controls: [
+          { type: \inputSelectOne, name: \universe, cascading: true, options: [
+            { val: \known, cascade: [], text: { 0: 'Known' } }
+          ] }
+          { type: \inputSelectOne, name: \galaxy, cascading: true, options: [
+            { val: \milkyway, cascade: [ \known ], text: { 0: 'Milky Way' } }
+            { val: \andromeda, cascade: [ \known ], text: { 0: 'Andromeda' } }
+          ] }
+          { type: \inputSelectOne, name: \star, options: [
+            { val: \sol, cascade: [ \known, \milkyway ], text: { 0: 'Sol' } }
+            { val: \an, cascade: [ \known, \andromeda ], text: { 0: 'AN And' } }
+          ] }
+        ]
+      )
+
+      expect(result[1].data).toEqual([
+        [ 'list name', \name, \label::en, \universe, \galaxy ]
+        [ \choices_universe, \known, 'Known', undefined, undefined ]
+        [ \choices_galaxy, \milkyway, 'Milky Way', \known, undefined ]
+        [ \choices_galaxy, \andromeda, 'Andromeda', \known, undefined ]
+        [ \choices_star, \sol, 'Sol', \known, \milkyway ]
+        [ \choices_star, \an, 'AN And', \known, \andromeda ]
+      ])
+
+    test 'single multilingual cascading select', ->
+      result = convert-form(
+        metadata:
+          activeLanguages: { 0: \en, 1: \nyan, _counter: 0 }
+        controls: [
+          { type: \inputSelectOne, name: \universe, cascading: true, options: [
+            { val: \known, cascade: [], text: { 0: 'Known', 1: 'Nyown' } }
+          ] }
+          { type: \inputSelectOne, name: \galaxy, cascading: true, options: [
+            { val: \milkyway, cascade: [ \known ], text: { 0: 'Milky Way', 1: 'Milky Nyan' } }
+            { val: \andromeda, cascade: [ \known ], text: { 0: 'Andromeda', 1: 'Nyandromeda' } }
+          ] }
+          { type: \inputSelectOne, name: \star, options: [
+            { val: \sol, cascade: [ \known, \milkyway ], text: { 0: 'Sol', 1: 'Nyan Sol' } }
+            { val: \an, cascade: [ \known, \andromeda ], text: { 0: 'AN And', 1: 'NyAN NyAnd' } }
+          ] }
+        ]
+      )
+
+      expect(result[1].data).toEqual([
+        [ 'list name', \name, \label::en, \label::nyan, \universe, \galaxy ]
+        [ \choices_universe, \known, 'Known', 'Nyown', undefined, undefined ]
+        [ \choices_galaxy, \milkyway, 'Milky Way', 'Milky Nyan', \known, undefined ]
+        [ \choices_galaxy, \andromeda, 'Andromeda', 'Nyandromeda', \known, undefined ]
+        [ \choices_star, \sol, 'Sol', 'Nyan Sol', \known, \milkyway ]
+        [ \choices_star, \an, 'AN And', 'NyAN NyAnd', \known, \andromeda ]
+      ])
+
+    test 'multiple cascading selects', ->
+      result = convert-form(
+        metadata:
+          activeLanguages: { 0: \en, _counter: 0 }
+        controls: [
+          { type: \inputSelectOne, name: \universe, cascading: true, options: [
+            { val: \known, cascade: [], text: { 0: 'Known' } }
+          ] }
+          { type: \inputSelectOne, name: \galaxy, cascading: true, options: [
+            { val: \milkyway, cascade: [ \known ], text: { 0: 'Milky Way' } }
+            { val: \andromeda, cascade: [ \known ], text: { 0: 'Andromeda' } }
+          ] }
+          { type: \inputSelectOne, name: \star, options: [
+            { val: \sol, cascade: [ \known, \milkyway ], text: { 0: 'Sol' } }
+            { val: \an, cascade: [ \known, \andromeda ], text: { 0: 'AN And' } }
+          ] }
+
+          { type: \inputSelectOne, name: \kingdom, cascading: true, options: [
+            { val: \animalia, cascade: [], text: { 0: 'Animalia' } }
+            { val: \plantae, cascade: [], text: { 0: 'Plantae' } }
+          ] }
+          { type: \inputSelectOne, name: \phylum, cascading: true, options: [
+            { val: \arthropoda, cascade: [ \animalia ], text: { 0: 'Arthropoda' } }
+            { val: \chordata, cascade: [ \animalia ], text: { 0: 'Chordata' } }
+            { val: \magnoliophyta, cascade: [ \plantae ], text: { 0: 'Magnoliophyta' } }
+          ] }
+          { type: \inputSelectOne, name: \class, options: [
+            { val: \insecta, cascade: [ \animalia, \arthropoda ], text: { 0: 'Insecta' } }
+            { val: \mammalia, cascade: [ \animalia, \chordata ], text: { 0: 'Mammalia' } }
+            { val: \magnoliopsida, cascade: [ \plantae, \magnoliophyta ], text: { 0: 'Magnoliopsida' } }
+          ] }
+        ]
+      )
+
+      expect(result[1].data).toEqual([
+        [ 'list name', \name, \label::en, \universe, \galaxy, \kingdom, \phylum ]
+        [ \choices_universe, \known, 'Known', undefined, undefined, undefined, undefined ]
+        [ \choices_galaxy, \milkyway, 'Milky Way', \known, undefined, undefined, undefined ]
+        [ \choices_galaxy, \andromeda, 'Andromeda', \known, undefined, undefined, undefined ]
+        [ \choices_star, \sol, 'Sol', \known, \milkyway, undefined, undefined ]
+        [ \choices_star, \an, 'AN And', \known, \andromeda, undefined, undefined ]
+        [ \choices_kingdom, \animalia, 'Animalia', undefined, undefined, undefined, undefined ]
+        [ \choices_kingdom, \plantae, 'Plantae', undefined, undefined, undefined, undefined ]
+        [ \choices_phylum, \arthropoda, 'Arthropoda', undefined, undefined, \animalia, undefined ]
+        [ \choices_phylum, \chordata, 'Chordata', undefined, undefined, \animalia, undefined ]
+        [ \choices_phylum, \magnoliophyta, 'Magnoliophyta', undefined, undefined, \plantae, undefined ]
+        [ \choices_class, \insecta, 'Insecta', undefined, undefined, \animalia, \arthropoda ]
+        [ \choices_class, \mammalia, 'Mammalia', undefined, undefined, \animalia, \chordata ]
+        [ \choices_class, \magnoliopsida, 'Magnoliopsida', undefined, undefined, \plantae, \magnoliophyta ]
+      ])
+
 describe 'complex row generation' ->
   test 'generates begin and end rows for groups' ->
       result = convert-form(

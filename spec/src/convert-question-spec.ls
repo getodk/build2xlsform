@@ -405,6 +405,37 @@ describe 'options' ->
 
   # TODO: no test for choice id collision.
 
+describe 'cascading' ->
+  test 'cascading selects generate choice_filters' ->
+    context = new-context()
+    first = convert-question({ type: \inputSelectOne, name: \universe, cascading: true, options: [] }, context)
+    expect(first.choice_filter).toBe('')
+    second = convert-question({ type: \inputSelectOne, name: \galaxy, cascading: true, options: [] }, context)
+    expect(second.choice_filter).toBe('universe = ${universe}')
+    third = convert-question({ type: \inputSelectOne, name: \star, options: [] }, context)
+    expect(third.choice_filter).toBe('universe = ${universe} and galaxy = ${galaxy}')
+
+  test 'cascade ends appropriately' ->
+    context = new-context()
+    convert-question({ type: \inputSelectOne, name: \universe, cascading: true, options: [] }, context)
+    convert-question({ type: \inputSelectOne, name: \galaxy, cascading: true, options: [] }, context)
+    convert-question({ type: \inputSelectOne, name: \star, options: [] }, context)
+    innocent = convert-question({ type: \inputSelectOne, name: \something_else, options: [] }, context)
+    expect(innocent.choice_filter).toBe(undefined)
+
+  test 'cascade options are reformatted to dict lookups' ->
+    context = new-context()
+    convert-question({ type: \inputSelectOne, name: \universe, cascading: true, options: [] }, context)
+    convert-question({ type: \inputSelectOne, name: \galaxy, cascading: true, options: [] }, context)
+    convert-question({ type: \inputSelectOne, name: \star, options: [
+      { val: \sol, cascade: [ \known, \milkyway ], text: {} }
+      { val: \alphacentauri, cascade: [ \known, \milkyway ], text: {} }
+    ] }, context)
+    expect(context.choices.choices_star).toEqual([
+      { val: \sol, cascade: { universe: \known, galaxy: \milkyway }, text: {} }
+      { val: \alphacentauri, cascade: { universe: \known, galaxy: \milkyway }, text: {} }
+    ])
+
 # questions nested in groups are recursively processed:
 describe 'group children' ->
   # use required flag mutation as a sign that processing happened.

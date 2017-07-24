@@ -12,7 +12,7 @@ expr-value = (value) ->
   | otherwise                 => value
 
 # conversion constants.
-survey-fields = <[ type name label hint required read_only default constraint constraint_message relevant calculation parameters appearance ]>
+survey-fields = <[ type name label hint required read_only default constraint constraint_message relevant calculation choice_filter parameters appearance ]>
 choices-fields = [ 'list name', \name, \label ]
 
 multilingual-fields = <[ label hint constraint_message ]> # these fields have ::lang syntax/support.
@@ -123,6 +123,23 @@ convert-question = (question, context, prefix = []) ->
   ## drop successor information into context:
   if (other = delete question.other)?
     context.successor-relevance = other |> map(-> "selected(#{question.name}, '#it')") |> join(' or ')
+
+  # deal with cascades.
+  if (question.cascading is true) or context.cascade?
+    context.cascade ?= []
+
+    # add a choice filter column value.
+    question.choice_filter = [ "#name = ${#name}" for name in context.cascade ].join(' and ')
+
+    # munge our options to have cascade dicts rather than arrays.
+    for option in question.options
+      option.cascade = { [ context.cascade[idx], value ] for value, idx in option.cascade }
+
+    # push our context now that we are done. drop the whole thing if we are at the tail.
+    context.cascade.push(question.name)
+    if question.cascading isnt true
+      delete context.cascade
+    delete question.cascading
 
   # deal with choices. life is hard.
   if question.options?
@@ -246,8 +263,16 @@ convert-form = (form) ->
       [ [ (if field in multilingual-fields then gen-lang(question[field]) else question[field]) for field in survey-simple-fields ] |> flatten ]
   survey-rows = gen-rows(intermediate)
 
-  # choices serialize straight out.
-  choices-rows = [ [ name, entry.val ] ++ gen-lang(entry.text) for name, entries of choices for entry in entries ]
+  # choices might gain columns if cascades are involved.
+  additional-choice-cols = []
+  for _, entries of choices when entries[0]?.cascade?
+    for key of entries[0].cascade when key not in additional-choice-cols
+      additional-choice-cols.push(key)
+  choices-schema ++= additional-choice-cols
+
+  # once we know the additional fields we can send them all out.
+  pull-cascade-values = (entry) -> [ entry.cascade[col] for col in additional-choice-cols ]
+  choices-rows = [ [ name, entry.val ] ++ gen-lang(entry.text) ++ pull-cascade-values(entry) for name, entries of choices for entry in entries ]
 
   # return sheets.
   [
