@@ -3,7 +3,7 @@ server = require(\express)()
 
 { convert-form, serialize-form } = require('./convert')
 
-server.use(body-parser.json())
+server.use(body-parser.json({ limit: '5mb' }))
 
 server.post \/convert, (request, response) ->
   try
