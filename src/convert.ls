@@ -74,8 +74,12 @@ new-context = -> { seen-fields: {}, choices: {}, warnings: [] }
 
 # creates a range expression.
 gen-range = (range, self = \.) ->
-    [ "#self >#{if range.minInclusive is true then \= else ''} #{expr-value(range.min)}",
-      "#self <#{if range.maxInclusive is true then \= else ''} #{expr-value(range.max)}" ]
+  result = []
+  unless is-nonsense(range.min)
+    result.push("#self >#{if range.minInclusive is true then \= else ''} #{expr-value(range.min)}")
+  unless is-nonsense(range.max)
+    result.push("#self <#{if range.maxInclusive is true then \= else ''} #{expr-value(range.max)}")
+  result
 
 # returns an intermediate-formatted question clone (purely functional), but mutates context.
 convert-question = (question, context, prefix = []) ->

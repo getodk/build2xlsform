@@ -186,6 +186,14 @@ describe \constraint ->
     result = { type: \inputNumber, range: { min: 3, max: 9, maxInclusive: true } } |> convert-simple
     expect(result.constraint).toBe('(. > 3) and (. <= 9)')
 
+  test 'build number/date range constraint generation (min-only)' ->
+    result = { type: \inputNumber, range: { min: 3, minInclusive: true } } |> convert-simple
+    expect(result.constraint).toBe('(. >= 3)')
+
+  test 'build number/date range constraint generation (max)' ->
+    result = { type: \inputNumber, range: { max: 3, maxInclusive: true } } |> convert-simple
+    expect(result.constraint).toBe('(. <= 3)')
+
   test 'build number/date range false pruning' ->
     result = { type: \inputText, range: false } |> convert-simple
     expect(result.constraint).toBe(undefined)
