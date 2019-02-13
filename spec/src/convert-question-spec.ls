@@ -262,6 +262,12 @@ describe 'followup question' ->
     expect(result.relevant).toBe("(selected(testquestion, 'testvalue'))")
     expect(context.successor-relevance).toBe(undefined)
 
+  test 'blank values are ignored' ->
+    context = new-context() with successor-relevance: ""
+    result = convert-question({ type: \inputText }, context)
+    expect(result.relevant).toBe(undefined)
+    expect(context.successor-relevance).toBe(undefined)
+
   test 'context is cleared at the end of group scope' ->
     context = new-context()
     convert-question({ type: \group, children: [{ type: \inputSelectOne, name: \test, other: [ \test ] }] }, context)

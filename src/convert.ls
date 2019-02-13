@@ -122,7 +122,8 @@ convert-question = (question, context, prefix = []) ->
 
   ## merge in convenience relevant logic definitions:
   if (successor-relevance = delete context.successor-relevance)?
-    question.relevant = (question.relevant ? []) ++ [ successor-relevance ] |> map(-> "(#it)") |> (.join(' and '))
+    unless is-nonsense(successor-relevance)
+      question.relevant = (question.relevant ? []) ++ [ successor-relevance ] |> map(-> "(#it)") |> (.join(' and '))
 
   ## drop successor information into context:
   if (other = delete question.other)?
