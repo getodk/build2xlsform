@@ -78,17 +78,45 @@ describe \type ->
   test 'media: image' ->
     explicit = { type: \inputMedia, kind: \Image } |> convert-simple
     expect(explicit.type).toBe(\image)
+    expect(explicit.appearance).toBeUndefined()
 
     implicit = { type: \inputMedia } |> convert-simple
     expect(implicit.type).toBe(\image)
 
+  test 'media: image/selfie' ->
+    explicit = { type: \inputMedia, kind: \Selfie } |> convert-simple
+    expect(explicit.type).toBe(\image)
+    expect(explicit.appearance).toBe(\new-front)
+
+  test 'media: image/annotate' ->
+    explicit = { type: \inputMedia, kind: \Annotate } |> convert-simple
+    expect(explicit.type).toBe(\image)
+    expect(explicit.appearance).toBe(\annotate)
+
+  test 'media: image/draw' ->
+    explicit = { type: \inputMedia, kind: \Draw } |> convert-simple
+    expect(explicit.type).toBe(\image)
+    expect(explicit.appearance).toBe(\draw)
+
+  test 'media: image/signature' ->
+    explicit = { type: \inputMedia, kind: \Signature } |> convert-simple
+    expect(explicit.type).toBe(\image)
+    expect(explicit.appearance).toBe(\signature)
+
   test 'media: audio' ->
     result = { type: \inputMedia, kind: \Audio } |> convert-simple
     expect(result.type).toBe(\audio)
+    expect(result.appearance).toBeUndefined()
 
   test 'media: video' ->
     result = { type: \inputMedia, kind: \Video } |> convert-simple
     expect(result.type).toBe(\video)
+    expect(result.appearance).toBeUndefined()
+
+  test 'media: video/selfie' ->
+    result = { type: \inputMedia, kind: 'Selfie Video' } |> convert-simple
+    expect(result.type).toBe(\video)
+    expect(result.appearance).toBe(\new-front)
 
   test \barcode ->
     result = { type: \inputBarcode } |> convert-simple
