@@ -83,6 +83,11 @@ describe \type ->
     implicit = { type: \inputMedia } |> convert-simple
     expect(implicit.type).toBe(\image)
 
+  test 'media: image/new' ->
+    explicit = { type: \inputMedia, kind: 'New Image' } |> convert-simple
+    expect(explicit.type).toBe(\image)
+    expect(explicit.appearance).toBe(\new)
+
   test 'media: image/selfie' ->
     explicit = { type: \inputMedia, kind: \Selfie } |> convert-simple
     expect(explicit.type).toBe(\image)

@@ -71,6 +71,7 @@ range-appearance-conversion =
 
 media-type-conversion =
   'Image': \image
+  'New Image': \image
   'Selfie': \image
   'Annotate': \image
   'Draw': \image
@@ -79,6 +80,7 @@ media-type-conversion =
   'Video': \video
   'Selfie Video': \video
 media-appearance-conversion =
+  'New Image': \new
   'Signature': \signature
   'Annotate': \annotate
   'Draw': \draw
