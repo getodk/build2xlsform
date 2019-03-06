@@ -211,25 +211,41 @@ describe \constraint ->
     result = { type: \inputText, length: false } |> convert-simple
     expect(result.constraint).toBe(undefined)
 
-  test 'build number/date range constraint generation (incl/excl combo)' ->
+  test 'build number range constraint generation (incl/excl combo)' ->
     result = { type: \inputNumber, range: { min: 3, minInclusive: true, max: 9 } } |> convert-simple
     expect(result.constraint).toBe('(. >= 3) and (. < 9)')
 
-  test 'build number/date range constraint generation (excl/incl combo)' ->
+  test 'build number range constraint generation (excl/incl combo)' ->
     result = { type: \inputNumber, range: { min: 3, max: 9, maxInclusive: true } } |> convert-simple
     expect(result.constraint).toBe('(. > 3) and (. <= 9)')
 
-  test 'build number/date range constraint generation (min-only)' ->
+  test 'build number range constraint generation (min-only)' ->
     result = { type: \inputNumber, range: { min: 3, minInclusive: true } } |> convert-simple
     expect(result.constraint).toBe('(. >= 3)')
 
-  test 'build number/date range constraint generation (max)' ->
+  test 'build number range constraint generation (max)' ->
     result = { type: \inputNumber, range: { max: 3, maxInclusive: true } } |> convert-simple
     expect(result.constraint).toBe('(. <= 3)')
 
-  test 'build number/date range false pruning' ->
+  test 'build text range false pruning' ->
     result = { type: \inputText, range: false } |> convert-simple
     expect(result.constraint).toBe(undefined)
+
+  test 'build date range constraint generation (incl/excl combo)' ->
+    result = { type: \inputDate, range: { min: '2009-01-01', minInclusive: true, max: '2009-12-31' } } |> convert-simple
+    expect(result.constraint).toBe("(. >= date('2009-01-01')) and (. < date('2009-12-31'))")
+
+  test 'build date range constraint generation (excl/incl combo)' ->
+    result = { type: \inputDate, range: { min: '2009-01-01', max: '2009-12-31', maxInclusive: true } } |> convert-simple
+    expect(result.constraint).toBe("(. > date('2009-01-01')) and (. <= date('2009-12-31'))")
+
+  test 'build date range constraint generation (min-only)' ->
+    result = { type: \inputDate, range: { min: '2009-01-01', minInclusive: true } } |> convert-simple
+    expect(result.constraint).toBe("(. >= date('2009-01-01'))")
+
+  test 'build date range constraint generation (max)' ->
+    result = { type: \inputDate, range: { max: '2009-12-31', maxInclusive: true } } |> convert-simple
+    expect(result.constraint).toBe("(. <= date('2009-12-31'))")
 
   test 'build select multiple response count constraint generation' ->
     result = { type: \inputSelectMany, count: { min: 3, max: 9, maxInclusive: true } } |> convert-simple
