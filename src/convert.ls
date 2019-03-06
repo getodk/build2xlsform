@@ -69,6 +69,24 @@ range-appearance-conversion =
   'Vertical Slider': \vertical
   'Picker': \picker
 
+media-type-conversion =
+  'Image': \image
+  'New Image': \image
+  'Selfie': \image
+  'Annotate': \image
+  'Draw': \image
+  'Signature': \image
+  'Audio': \audio
+  'Video': \video
+  'Selfie Video': \video
+media-appearance-conversion =
+  'New Image': \new
+  'Signature': \signature
+  'Annotate': \annotate
+  'Draw': \draw
+  'Selfie': \new-front
+  'Selfie Video': \new-front
+
 # make unit testing easier.
 new-context = -> { seen-fields: {}, choices: {}, warnings: [] }
 
@@ -161,6 +179,10 @@ convert-question = (question, context, prefix = []) ->
   if question.type is \inputDate
     question.appearance = date-kind-conversion[question.kind] if date-type-conversion[question.kind]?
 
+  # if media, we may need to apply an appearance.
+  if question.type is \inputMedia and media-appearance-conversion[question.kind]?
+    question.appearance = media-appearance-conversion[question.kind]
+
   # field-list appearance.
   if (delete question.fieldList) is true
     question.appearance = \field-list
@@ -174,7 +196,7 @@ convert-question = (question, context, prefix = []) ->
       else
         \range
     else if question.type is \inputMedia
-      ((delete question.kind) ? \image).toLowerCase()
+      media-type-conversion[(delete question.kind) ? 'Image']
     else if question.type is \inputDate
       date-type-conversion[(delete question.kind) ? 'Full Date']
     else if question.type is \inputLocation
