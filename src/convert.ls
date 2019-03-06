@@ -73,12 +73,14 @@ range-appearance-conversion =
 new-context = -> { seen-fields: {}, choices: {}, warnings: [] }
 
 # creates a range expression.
-gen-range = (range, self = \.) ->
+gen-range = (type, range, self = \.) ->
   result = []
   unless is-nonsense(range.min)
-    result.push("#self >#{if range.minInclusive is true then \= else ''} #{expr-value(range.min)}")
+    min = if type is \inputDate then "date(#{expr-value(range.min)})" else expr-value(range.min)
+    result.push("#self >#{if range.minInclusive is true then \= else ''} #{min}")
   unless is-nonsense(range.max)
-    result.push("#self <#{if range.maxInclusive is true then \= else ''} #{expr-value(range.max)}")
+    max = if type is \inputDate then "date(#{expr-value(range.max)})" else expr-value(range.max)
+    result.push("#self <#{if range.maxInclusive is true then \= else ''} #{max}")
   result
 
 # returns an intermediate-formatted question clone (purely functional), but mutates context.
@@ -110,10 +112,10 @@ convert-question = (question, context, prefix = []) ->
     question.constraint = (question.constraint ? []) ++ "regex(., \"^.{#{length.min},#{length.max}}$\")"
   # merge number/date range.
   if (range = delete question.range)?
-    question.constraint = (question.constraint ? []) ++ gen-range(range)
+    question.constraint = (question.constraint ? []) ++ gen-range(question.type, range)
   # merge select multiple choice count range.
   if (count = delete question.count)?
-    question.constraint = (question.constraint ? []) ++ gen-range(count, 'count-selected(.)')
+    question.constraint = (question.constraint ? []) ++ gen-range(question.type, count, 'count-selected(.)')
   # convert constraint field back into an expression.
   if question.constraint.length is 0
     delete question.constraint
