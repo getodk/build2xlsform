@@ -279,7 +279,16 @@ describe 'required' -> # in which we briefly become a bit existential.
     falsy = { type: \inputText, required: false } |> convert-simple
     expect(falsy.required).toBe(undefined)
 
-# required_message::lang is in the xlsform spec but is not in the build featureset.
+describe 'required message' ->
+  test 'multilingual passthrough' ->
+    result = { type: \inputNumber, requiredText: { en: \fun, sv: \roligt } } |> convert-simple
+    expect(result.requiredText).toBe(undefined)
+    expect(result.required_message).toEqual({ en: \fun, sv: \roligt })
+
+  test 'empty pruning' ->
+    result = { type: \inputNumber, requiredText: {} } |> convert-simple
+    expect(result.requiredText).toBe(undefined)
+    expect(result.required_message).toBe(undefined)
 
 describe 'default' ->
   test 'value is passed through' ->
