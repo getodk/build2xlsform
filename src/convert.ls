@@ -56,6 +56,7 @@ metadata-type-conversion =
   'Subscriber ID': \subscriberid
   'SIM Serial': \simserial
   'Phone Number': \phonenumber
+  'Start Geopoint': \start-geopoint
 
 appearance-noops = [ 'Default (GPS)', 'Default' ]
 
