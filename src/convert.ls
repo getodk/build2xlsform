@@ -261,7 +261,7 @@ gen-settings = (form) ->
   if form.metadata?.user_version
     result = with-column(result, \version, form.metadata.user_version)
   else
-    result = with-column(result, \version, "#{Math.floor((new Date()).getTime() / 1000)}")
+    result = with-column(result, \version, Math.floor((new Date()).getTime() / 1000))
 
   result
 
