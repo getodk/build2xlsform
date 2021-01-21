@@ -3,9 +3,7 @@ build2xlsform
 
 introduction
 ------------
-**build2xlsform** is a simple library and webservice that takes [ODK Build](//github.com/clint-tseng/odkbuild) form data and converts it to [XLSForm](http://xlsform.org/)-compatible XLSX files. It supports all features in ODK Build and is actively maintained to keep it such. In minor instances, this exceeds XLSForm's own expressivity of XForms features, and in such cases we export lossy information and leave a message in a 'Warnings' spreadsheet. It is currently actively deployed on the [production Build instance](http://build.opendatakit.org).
-
-[![Build Status](https://api.travis-ci.org/clint-tseng/build2xlsform.svg?branch=master)](http://travis-ci.org/clint-tseng/build2xlsform)
+**build2xlsform** is a simple library and webservice that takes [ODK Build](//github.com/getodk/build) form data and converts it to [XLSForm](http://xlsform.org/)-compatible XLSX files. It supports all features in ODK Build and is actively maintained to keep it such. In minor instances, this exceeds XLSForm's own expressivity of XForms features, and in such cases we export lossy information and leave a message in a 'Warnings' spreadsheet. It is currently actively deployed on the [production Build instance](http://build.getodk.org).
 
 compilation
 -----------
