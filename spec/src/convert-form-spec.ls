@@ -398,9 +398,11 @@ describe 'settings generation' ->
   test 'generates expected fields and values' ->
     result = gen-settings({ title: \myform })
 
-    expect(result[0]).toEqual([ \form_title, \form_id ])
+    expect(result[0]).toEqual([ \form_title, \form_id, \version ])
     expect(result[1][0]).toBe(\myform)
-    expect(result[1][1]).toMatch(/build_myform_[0-9]+/)
+    expect(result[1][1]).toBe(\myform)
+    expect(result[1][2]).toMatch(/[0-9]+/)
+
 
   test 'uses metadata htitle for form title if provided' ->
     result = gen-settings({ title: \myform, metadata: { htitle: 'override title' } })
@@ -425,12 +427,12 @@ describe 'settings generation' ->
 
   test 'sanitizes form title for form_id' ->
     result = gen-settings({ title: 'Untitled! Test Form' })
-    expect(result[1][1]).toMatch(/build_Untitled-Test-Form_[0-9]+/)
+    expect(result[1][1]).toMatch(/Untitled-Test-Form/)
 
   test 'part of complete workbook generation' ->
     result = convert-form({ title: 'Test Form', metadata: { activeLanguages: { 0: \en, _counter: 0 } }, controls: [] })
     expect(result[2].name).toBe(\settings)
-    expect(result[2].data[0]).toEqual([ \form_title, \form_id ])
+    expect(result[2].data[0]).toEqual([ \form_title, \form_id, \version ])
     expect(result[2].data[1][0]).toBe('Test Form')
-    expect(result[2].data[1][1]).toMatch(/build_Test-Form_[0-9]+/)
+    expect(result[2].data[1][1]).toMatch(/Test-Form/)
 

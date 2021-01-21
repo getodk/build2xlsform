@@ -149,6 +149,9 @@ describe \type ->
     simserial = { type: \metadata, kind: 'SIM Serial' } |> convert-simple
     expect(simserial.type).toBe(\simserial)
 
+    startgeopoint = { type: \metadata, kind: 'Start Geopoint' } |> convert-simple
+    expect(startgeopoint.type).toBe(\start-geopoint)
+
     phonenumber = { type: \metadata, kind: 'Phone Number' } |> convert-simple
     expect(phonenumber.type).toBe(\phonenumber)
 
