@@ -57,6 +57,7 @@ metadata-type-conversion =
   'Subscriber ID': \subscriberid
   'SIM Serial': \simserial
   'Phone Number': \phonenumber
+  'Start Geopoint': \start-geopoint
 
 appearance-noops = [ 'Default (GPS)', 'Default' ]
 
@@ -253,13 +254,15 @@ gen-settings = (form) ->
   result = [ [], [] ]
 
   result = with-column(result, \form_title, if is-nonsense(form.metadata?.htitle) then form.title else form.metadata?.htitle)
-  result = with-column(result, \form_id, "build_#{form.title?.replace(/([^a-z0-9]+)/ig, '-')}_#{Math.floor((new Date()).getTime() / 1000)}")
+  result = with-column(result, \form_id, "#{form.title?.replace(/([^a-z0-9]+)/ig, '-')}")
 
   for attr in [ \public_key, \submission_url, \instance_name ] when form.metadata?[attr]?
     result = with-column(result, attr, form.metadata[attr])
 
   if form.metadata?.user_version
     result = with-column(result, \version, form.metadata.user_version)
+  else
+    result = with-column(result, \version, Math.floor((new Date()).getTime() / 1000))
 
   result
 

@@ -7,15 +7,15 @@
   },
   "main": "lib/convert",
   "dependencies": {
-    "express": "~4",
     "body-parser": "~1",
     "deepcopy": "0.6.3",
+    "express": "~4",
     "node-xlsx": "0.7.4",
     "prelude-ls": "1.1.2"
   },
   "devDependencies": {
-    "livescript": "1.5.0",
     "jasmine": "2.5.2",
-    "jasmine-reporters": "2.2.0"
+    "jasmine-reporters": "2.2.0",
+    "livescript": "1.5.0"
   }
 }
