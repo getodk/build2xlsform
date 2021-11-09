@@ -12,10 +12,10 @@ expr-value = (value) ->
   | otherwise                 => value
 
 # conversion constants.
-survey-fields = <[ type name label hint required required_message read_only default constraint constraint_message relevant calculation choice_filter parameters appearance ]>
+survey-fields = <[ type name label hint guidance_hint required required_message read_only default constraint constraint_message relevant calculation choice_filter parameters appearance ]>
 choices-fields = [ 'list name', \name, \label ]
 
-multilingual-fields = <[ label hint required_message constraint_message ]> # these fields have ::lang syntax/support.
+multilingual-fields = <[ label hint guidance_hint required_message constraint_message ]> # these fields have ::lang syntax/support.
 prune-false = <[ required read_only range length count ]> # these fields default to 'no', so just leave them out for a cleaner output.
 
 fieldname-conversion =
@@ -25,6 +25,7 @@ fieldname-conversion =
   invalidText: \constraint_message
   readOnly: \read_only
   requiredText: \required_message
+  guidance: \guidance_hint
 
 type-conversion = {} # currently unused
 
