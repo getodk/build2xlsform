@@ -143,6 +143,9 @@ describe \type ->
     username = { type: \metadata, kind: 'Username' } |> convert-simple
     expect(username.type).toBe(\username)
 
+    email = { type: \metadata, kind: 'Email' } |> convert-simple
+    expect(email.type).toBe(\email)
+
     subscriberid = { type: \metadata, kind: 'Subscriber ID' } |> convert-simple
     expect(subscriberid.type).toBe(\subscriberid)
 
