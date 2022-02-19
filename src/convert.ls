@@ -67,6 +67,7 @@ appearance-conversion =
   'Minimal (spinner)': \minimal
   'Table': \label
   'Horizontal Layout': \horizontal
+  'Likert': \likert
 
 range-appearance-conversion =
   'Vertical Slider': \vertical
