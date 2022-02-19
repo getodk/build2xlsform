@@ -9,7 +9,7 @@ is-nonsense = (value) -> !value? or (value is '') or (is-type(\Object, value) an
 expr-value = (value) ->
   | value is null             => "''"
   | value |> is-type(\String) => "'#value'"
-  | otherwise                 => +value
+  | otherwise                 => value
 
 # conversion constants.
 survey-fields = <[ type name label hint guidance_hint required required_message read_only default constraint constraint_message relevant calculation choice_filter parameters appearance ]>
