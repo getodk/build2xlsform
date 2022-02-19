@@ -9,7 +9,7 @@ is-nonsense = (value) -> !value? or (value is '') or (is-type(\Object, value) an
 expr-value = (value) ->
   | value is null             => "''"
   | value |> is-type(\String) => "'#value'"
-  | otherwise                 => value
+  | otherwise                 => +value
 
 # conversion constants.
 survey-fields = <[ type name label hint guidance_hint required required_message read_only default constraint constraint_message relevant calculation choice_filter parameters appearance ]>
@@ -220,7 +220,7 @@ convert-question = (question, context, prefix = []) ->
   # range parameters.
   if question.type is \range
     select-range = (delete question.selectRange)
-    question.parameters = { start: select-range?.min, end: select-range?.max, step: (delete question.selectStep) }
+    question.parameters = { start: +select-range?.min, end: +select-range?.max, step: +(delete question.selectStep) }
     question.appearance = range-appearance-conversion[delete question.appearance]
     if question.sliderTicks is false
       question.appearance = ((question.appearance ? '') + ' no-ticks').trim()
