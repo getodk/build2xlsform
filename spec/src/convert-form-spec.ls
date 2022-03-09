@@ -420,6 +420,39 @@ describe 'settings generation' ->
     expect(result[0][2]).toBe(\instance_name)
     expect(result[1][2]).toBe(\testname)
 
+  test 'passes through auto_send and auto_delete form properties' ->
+    # do it in two passes to ensure partial generation works:
+    result = gen-settings({ title: \myform, metadata: { auto_send: 'true', auto_delete: 'false' } })
+    expect(result[0][2]).toBe(\auto_send)
+    expect(result[1][2]).toBe(\true)
+    expect(result[0][3]).toBe(\auto_delete)
+    expect(result[1][3]).toBe(\false)
+
+    result = gen-settings({ title: \myform, metadata: { auto_send: 'false', auto_delete: 'true' } })
+    expect(result[0][2]).toBe(\auto_send)
+    expect(result[1][2]).toBe(\false)
+    expect(result[0][3]).toBe(\auto_delete)
+    expect(result[1][3]).toBe(\true)
+
+    result = gen-settings({ title: \myform, metadata: { public_key: 'testkey', submission_url: 'testurl', auto_send: 'true', auto_delete: 'false' } })
+    expect(result[0][2]).toBe(\public_key)
+    expect(result[1][2]).toBe(\testkey)
+    expect(result[0][3]).toBe(\submission_url)
+    expect(result[1][3]).toBe(\testurl)
+    expect(result[0][4]).toBe(\auto_send)
+    expect(result[1][4]).toBe(\true)
+    expect(result[0][5]).toBe(\auto_delete)
+    expect(result[1][5]).toBe(\false)
+
+
+    result = gen-settings({ title: \myform, metadata: { public_key: 'testkey', submission_url: 'testurl', auto_delete: 'true' } })
+    expect(result[0][2]).toBe(\public_key)
+    expect(result[1][2]).toBe(\testkey)
+    expect(result[0][3]).toBe(\submission_url)
+    expect(result[1][3]).toBe(\testurl)
+    expect(result[0][4]).toBe(\auto_delete)
+    expect(result[1][4]).toBe(\true)    
+
   test 'passes through user-specified version', ->
     result = gen-settings({ title: \myform, metadata: { user_version: 'testversion' } })
     expect(result[0][2]).toBe(\version)

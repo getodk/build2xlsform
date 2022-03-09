@@ -143,6 +143,9 @@ describe \type ->
     username = { type: \metadata, kind: 'Username' } |> convert-simple
     expect(username.type).toBe(\username)
 
+    email = { type: \metadata, kind: 'Email' } |> convert-simple
+    expect(email.type).toBe(\email)
+
     subscriberid = { type: \metadata, kind: 'Subscriber ID' } |> convert-simple
     expect(subscriberid.type).toBe(\subscriberid)
 
@@ -435,6 +438,9 @@ describe 'appearance' ->
 
     result = { type: \inputSelectOne, appearance: 'Horizontal Layout' } |> convert-simple
     expect(result.appearance).toBe(\horizontal)
+
+    result = { type: \inputSelectOne, appearance: 'Likert' } |> convert-simple
+    expect(result.appearance).toBe(\likert)
 
 ## from here on, we cover features not part of the xlsform spec.
 

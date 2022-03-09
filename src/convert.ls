@@ -54,6 +54,7 @@ metadata-type-conversion =
   'End Time': \end
   'Today': \today
   'Username': \username
+  'Email': \email
   'Subscriber ID': \subscriberid
   'SIM Serial': \simserial
   'Phone Number': \phonenumber
@@ -68,6 +69,7 @@ appearance-conversion =
   'Table': \label
   'Horizontal Layout': \horizontal
   'Bearing': \bearing
+  'Likert': \likert
 
 range-appearance-conversion =
   'Vertical Slider': \vertical
@@ -261,7 +263,7 @@ gen-settings = (form) ->
   result = with-column(result, \form_title, if is-nonsense(form.metadata?.htitle) then form.title else form.metadata?.htitle)
   result = with-column(result, \form_id, "#{form.title?.replace(/([^a-z0-9]+)/ig, '-')}")
 
-  for attr in [ \public_key, \submission_url, \instance_name ] when form.metadata?[attr]?
+  for attr in [ \public_key, \submission_url, \instance_name, \auto_send, \auto_delete ] when form.metadata?[attr]?
     result = with-column(result, attr, form.metadata[attr])
 
   if form.metadata?.user_version
