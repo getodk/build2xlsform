@@ -435,6 +435,9 @@ describe 'appearance' ->
     result = { type: \inputSelectOne, appearance: 'Horizontal Layout' } |> convert-simple
     expect(result.appearance).toBe(\horizontal)
 
+    result = { type: \inputSelectOne, appearance: 'Likert' } |> convert-simple
+    expect(result.appearance).toBe(\likert)
+
 ## from here on, we cover features not part of the xlsform spec.
 
 # custom xpath bindings are in build but are *not* in xlsform:
