@@ -365,6 +365,10 @@ describe 'appearance' ->
     result = { type: \inputNumeric, appearance: 'Textbox' } |> convert-simple
     expect(result.appearance).toBe(undefined)
 
+    result = { type: \inputNumeric, appearance: 'Bearing' } |> convert-simple
+    expect(result.type).toBe(\decimal)
+    expect(result.appearance).toBe(\bearing)
+
     result = { type: \inputNumeric, appearance: 'Slider' } |> convert-simple
     expect(result.appearance).toBe(undefined)
 

@@ -68,6 +68,7 @@ appearance-conversion =
   'Minimal (spinner)': \minimal
   'Table': \label
   'Horizontal Layout': \horizontal
+  'Bearing': \bearing
   'Likert': \likert
 
 range-appearance-conversion =
@@ -84,6 +85,7 @@ media-type-conversion =
   'Audio': \audio
   'Video': \video
   'Selfie Video': \video
+
 media-appearance-conversion =
   'New Image': \new
   'Signature': \signature
@@ -195,11 +197,14 @@ convert-question = (question, context, prefix = []) ->
     question.appearance = \field-list
 
   # massage the type.
+  # numeric inputs of type decimal are either Textbox (default), bearing, or range widgets (slider, vertical slider, or picker).
   question.type =
     if question.type is \inputNumeric
       if !question.appearance? or question.appearance is \Textbox
         delete question.appearance
-        ((delete question.kind) ? \integer).toLowerCase()
+        ((delete question.kind) ? \integer).toLowerCase()        
+      else if question.appearance is \bearing
+        \decimal
       else
         \range
     else if question.type is \inputMedia
