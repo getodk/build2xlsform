@@ -54,6 +54,7 @@ metadata-type-conversion =
   'End Time': \end
   'Today': \today
   'Username': \username
+  'Email': \email
   'Subscriber ID': \subscriberid
   'SIM Serial': \simserial
   'Phone Number': \phonenumber
