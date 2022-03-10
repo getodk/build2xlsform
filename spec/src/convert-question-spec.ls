@@ -228,7 +228,7 @@ describe \constraint ->
 
   test 'build number range constraint generation (max)' ->
     result = { type: \inputNumber, range: { max: 3, maxInclusive: true } } |> convert-simple
-    expect(result.constraint).toBe('(. <= 3)')  
+    expect(result.constraint).toBe('(. <= 3)')
 
   test 'build text range false pruning' ->
     result = { type: \inputText, range: false } |> convert-simple
