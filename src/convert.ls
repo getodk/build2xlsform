@@ -227,7 +227,7 @@ convert-question = (question, context, prefix = []) ->
   # range parameters.
   if question.type is \range
     select-range = (delete question.selectRange)
-    question.parameters = { start: select-range?.min, end: select-range?.max, step: (delete question.selectStep) }
+    question.parameters = { start: +select-range?.min, end: +select-range?.max, step: +(delete question.selectStep) }
     question.appearance = range-appearance-conversion[delete question.appearance]
     if question.sliderTicks is false
       question.appearance = ((question.appearance ? '') + ' no-ticks').trim()

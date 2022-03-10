@@ -555,4 +555,7 @@ describe 'parameters' ->
     for appearance in [ 'Slider', 'Vertical Slider', 'Picker' ]
       result = { type: \inputNumeric, appearance, selectRange: { min: 13, max: 42 }, selectStep: 1.5 } |> convert-simple
       expect(result.parameters).toBe('start=13 end=42 step=1.5')
-
+    # Slider parameters are quoted in XForm but must be numeric in XLSForm
+    for appearance in [ 'Slider', 'Vertical Slider', 'Picker' ]
+      result = { type: \inputNumeric, appearance, selectRange: { min: \13, max: \42 }, selectStep: \1.5 } |> convert-simple
+      expect(result.parameters).toBe('start=13 end=42 step=1.5')
