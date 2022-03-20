@@ -1,7 +1,7 @@
 FROM node:10.19.0
 LABEL author="ODK"
 LABEL maintainer="ODK Build maintainers"
-LABEL description="ODK build2xlsform, an ODK XForms to XLSForm converter"
+LABEL description="Generate an XLSForm from an ODK Build Xform"
 
 WORKDIR /srv/odkbuild2xlsform
 COPY . .
