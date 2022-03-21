@@ -1,5 +1,8 @@
 build2xlsform
 =============
+<!-- badges: start -->
+[![docker](https://github.com/getodk/build2xlsform/actions/workflows/docker.yml/badge.svg)](https://github.com/getodk/build2xlsform/actions/workflows/docker.yml)
+<!-- badges: end -->
 
 introduction
 ------------
