@@ -1,21 +1,21 @@
 {
   "name": "build2xlsform",
-  "version": "0.1.0",
+  "version": "1.8.0",
   "private": true,
   "scripts": {
     "test": "make test"
   },
   "main": "lib/convert",
   "dependencies": {
-    "body-parser": "~1",
-    "deepcopy": "0.6.3",
-    "express": "~4",
-    "node-xlsx": "0.7.4",
-    "prelude-ls": "1.1.2"
+    "body-parser": "^1.19.2",
+    "deepcopy": "^2.1.0",
+    "express": "^4.17.3",
+    "node-xlsx": "^0.21.0",
+    "prelude-ls": "^1.2.1"
   },
   "devDependencies": {
-    "jasmine": "2.5.2",
-    "jasmine-reporters": "2.2.0",
-    "livescript": "1.5.0"
+    "jasmine": "^4.0.2",
+    "jasmine-reporters": "^2.5.0",
+    "livescript": "^1.6.0"
   }
 }

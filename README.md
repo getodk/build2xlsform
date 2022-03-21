@@ -10,7 +10,7 @@ introduction
 
 compilation
 -----------
-The project depends on **nodejs**; we officially support versions 5 and 6. Make sure you have node and npm [correctly installed](https://nodejs.org/en/download/) for your platform.
+The project depends on **nodejs**; we officially support version 16. Make sure you have node and npm [correctly installed](https://nodejs.dev/learn/how-to-install-nodejs) for your platform.
 
 Once you have that, you should be able to simply `make` to trigger a build. The Makefile handles running `npm install`, but if you into issues performing that step on your own is a good troubleshooting start.
 
@@ -49,7 +49,7 @@ Please submit pull requests for any code you'd like to push. As you do so, pleas
 
 * The project is meant to be as purely-functional as possible, as is ideal for data handling and transformation. Avoid mutable or global state, and don't introduce heavy object-oriented approaches without very good reason.
 * Please do run the tests before submission, and augment them as necessary.
-* Please ensure that any changes you make adhere to both the [ODK Build](https://github.com/clint-tseng/odkbuild/blob/master/public/javascripts/control.js#L206) property schema, as well as the XLSForm [reference spec](http://xlsform.org/ref-table/).
+* Please ensure that any changes you make adhere to both the [ODK Build](https://github.com/getodk/build/blob/master/public/javascripts/control.js#L459) property schema, as well as the XLSForm [reference spec](https://xlsform.org/en/ref-table/).
 
 license
 -------
