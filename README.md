@@ -1,3 +1,5 @@
+## ⚠️ ODK Build is no longer being updated. Please use [XLSForm](https://docs.getodk.org/xlsform/) instead. ⚠️
+
 build2xlsform
 =============
 <!-- badges: start -->
